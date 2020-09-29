@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+#  web:
+#    build: .
+#    ports:
+#      - "8000:8000"
+  db:    
+    image: postgres:12.2-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data:delegated
+volumes:
+  db-data:
