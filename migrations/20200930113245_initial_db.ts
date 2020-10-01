@@ -2,18 +2,24 @@ import * as Knex from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable("users", table => {
+  return knex.schema.createTable("patients", table => {
     table.increments('id').primary()
-    table.string("username").unique()
-    table.string("hash")
-    table.string("salt")
-    table.string("telephone")
-    // TODO: finish
+    table.string("username").unique().notNullable()
+    table.string("hash").notNullable()
+    table.string("salt").notNullable()
+    table.string("telephone").notNullable()
+    table.string("firstName").notNullable()
+    table.string("lastName").notNullable()
+    table.date("birthDate").notNullable()
+    table.string("email")
+    table.string("CF").notNullable()
+    table.string("address")
+    table.string("notes")
   })
 }
 
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTableIfExists("patients").dropTableIfExists("users")
+  return knex.schema.dropTableIfExists("patients")
 }
 

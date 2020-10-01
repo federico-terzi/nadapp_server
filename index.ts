@@ -1,7 +1,8 @@
 import express, { NextFunction } from "express"
 import Knex from "knex";
+import { Model } from "objection"
 import * as bodyParser from "body-parser"
-import { devConnection } from "./db_connection"
+import KnexConfig from "./knexfile"
 import passport from "passport"
 import jwt from "jsonwebtoken"
 import { Strategy as LocalStrategy } from "passport-local"
@@ -12,13 +13,15 @@ import { configurePassport } from "./auth/passport";
 
 const PORT = 8000;
 
-const knex = Knex(devConnection)
+const knex = Knex(KnexConfig.development)
 
 // TODO: improve connection check
 knex.raw('select 1+1 as result').catch(err => {
   console.log(err);
   process.exit(1);
 });
+
+Model.knex(knex)
 
 const app = express()
 
@@ -52,7 +55,10 @@ app.get('/movies/:id', async (req,res) => {
 // Handle errors.
 app.use((err: any, req: any, res: any, next: NextFunction) => {
   res.status(err.status || 500)
-  res.json({ error: err })
+  res.json({ error: err.message || "internal error" })
+
+  // TODO: hide in production
+  console.log(err);
 })
 
 app.listen(PORT, () => {

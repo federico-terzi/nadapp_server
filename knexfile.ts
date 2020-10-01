@@ -1,5 +1,4 @@
-module.exports = {
-  /*
+export default {
   development: {
     client: "sqlite3",
     connection: {
@@ -7,6 +6,7 @@ module.exports = {
     }
   },
 
+  /*
   staging: {
     client: "postgresql",
     connection: {
@@ -24,6 +24,7 @@ module.exports = {
   },
   */
 
+  /*
   development: {
     client: 'postgresql',
     connection: {
@@ -41,6 +42,7 @@ module.exports = {
       tableName: "knex_migrations"
     }
   },
+  */
 
   production: {
     client: "postgresql",
