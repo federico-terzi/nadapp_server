@@ -1,8 +1,8 @@
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt"
 import passport from "passport"
-import Patient from "../models/Patient"
-import { HttpError } from "../errors"
+import Patient from "../model/Patient"
+import { HttpError } from "../../errors"
 
 export const configurePassport = () => {
   passport.use("login",
@@ -14,17 +14,15 @@ export const configurePassport = () => {
         try {
           const user = await Patient.query().select().where("username", "=", username).first()
           
-          // TODO: change
           if (!user) {
             return done(new HttpError("user not found", 403));
           }
 
           // TODO: validate password
-          /*
+          
           return done(null, {
             name: user.firstName,
           })
-          */
           /*
           const user = await UserModel.findOne({ email });
     

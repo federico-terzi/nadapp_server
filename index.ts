@@ -7,9 +7,10 @@ import passport from "passport"
 import jwt from "jsonwebtoken"
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt"
-import secureRoutes from "./routes/secure"
-import authRoutes from "./routes/auth"
-import { configurePassport } from "./auth/passport";
+import secureRoutes from "./src/routes/secure"
+import authRoutes from "./src/routes/auth"
+import { configurePassport } from "./src/auth/passport";
+import { HttpError } from "./errors";
 
 const PORT = 8000;
 
@@ -54,9 +55,14 @@ app.get('/movies/:id', async (req,res) => {
 
 // Handle errors.
 app.use((err: any, req: any, res: any, next: NextFunction) => {
-  res.status(err.status || 500)
-  res.json({ error: err.message || "internal error" })
-
+  if (err instanceof HttpError) {
+    res.status(err.status)
+    res.json({ error: err.message })
+  } else {
+    res.status(err.status || 500)
+    res.json({ error: "internal error" })
+  }
+  
   // TODO: hide in production
   console.log(err);
 })
