@@ -27,8 +27,7 @@ router.post(
             async (error) => {
               if (error) return next(error);
 
-              const body = { _id: user._id, email: user.email };
-              const token = jwt.sign({ user: body }, 'TOP_SECRET') // TODO: change JWT secret
+              const token = jwt.sign({ user }, 'TOP_SECRET') // TODO: change JWT secret
 
               return res.json({ token });
             }

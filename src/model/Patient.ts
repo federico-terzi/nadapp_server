@@ -7,8 +7,9 @@ export default class Patient extends Model {
   firstName!: string
   lastName!: string
   CF!: string
-  birthDate!: Date
+  birthDate!: string 
   telephone!: string
+  lastServerEdit!: number
 
   email?: string
   address?: string

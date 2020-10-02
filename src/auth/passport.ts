@@ -1,7 +1,7 @@
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt"
 import passport from "passport"
-import Patient from "../model/Patient"
+import Patient from "../model/patient"
 import { HttpError } from "../../errors"
 
 export const configurePassport = () => {
@@ -10,19 +10,53 @@ export const configurePassport = () => {
       usernameField: 'username',
       passwordField: 'password'
     },
-      async (username: string, password: string, done: any) => { // TODO: change any
+      async (prefixedUser: string, password: string, done: any) => { // TODO: change any
         try {
-          const user = await Patient.query().select().where("username", "=", username).first()
+          const isPatient = prefixedUser.startsWith("patient@");
+          const isMed = prefixedUser.startsWith("med@");
+          // TODO: test login without category
+          if (!isMed && !isPatient) {
+            return done(new HttpError("invalid category", 400))
+          }
+
+          const tokens = prefixedUser.match(/.*?@(.*)/)
+          // TODO: add test
+          if (!tokens) {
+            return done(new HttpError("bad username format", 400))
+          }
+
+          const username: string = tokens[1]
+          // TODO: test
+          if (!username || username.trim().length == 0) {
+            return done(new HttpError("bad username content", 400))
+          }
+
+          let user: Patient | null = null // TODO: add med category
+
+          if (isPatient) {
+            user = await Patient.query().select().where("username", "=", username).first()
+          }
+          if (isMed) {
+            // TODO
+          } 
           
           if (!user) {
-            return done(new HttpError("user not found", 403));
+            return done(new HttpError("user not found", 403))
           }
 
           // TODO: validate password
           
-          return done(null, {
-            name: user.firstName,
-          })
+          let userData = null
+
+          if (isPatient) {
+            userData = {
+              patientId: user.id
+            }
+          } else if (isMed) {
+            // TODO
+          }
+
+          return done(null, userData)
           /*
           const user = await UserModel.findOne({ email });
     

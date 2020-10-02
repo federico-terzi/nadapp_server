@@ -1,11 +1,13 @@
 export default {
+  /*
   development: {
     client: "sqlite3",
     connection: {
       filename: "./dev.sqlite3"
-    }
+    },
+    debug: true,
   },
-
+  */
   /*
   staging: {
     client: "postgresql",
@@ -24,7 +26,7 @@ export default {
   },
   */
 
-  /*
+  
   development: {
     client: 'postgresql',
     connection: {
@@ -40,9 +42,9 @@ export default {
     },
     migrations: {
       tableName: "knex_migrations"
-    }
+    },
+    debug: true,
   },
-  */
 
   production: {
     client: "postgresql",

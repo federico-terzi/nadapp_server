@@ -58,6 +58,9 @@ app.use((err: any, req: any, res: any, next: NextFunction) => {
   if (err instanceof HttpError) {
     res.status(err.status)
     res.json({ error: err.message })
+  } else if (err instanceof SyntaxError) {
+    res.status(400)
+    res.json({ error: "bad json format" })
   } else {
     res.status(err.status || 500)
     res.json({ error: "internal error" })

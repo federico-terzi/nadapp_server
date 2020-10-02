@@ -14,6 +14,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("CF").unique().notNullable()
     table.string("address")
     table.string("notes")
+    table.timestamp("lastServerEdit").notNullable()
   })
 }
 
