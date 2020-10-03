@@ -11,9 +11,33 @@ export const syncValidator = new Ajv().compile({
         type: "object",
         required: ["uuid", "meal", "date"],
         properties: {
-          uuid: { type: "string", minLength: 1, maxLength: 30 },
-          meal: { type: "string", minLength: 1 },
+          uuid: { type: "string", minLength: 1, maxLength: 50 },
+          meal: { type: "string", minLength: 1, maxLength: 1024 },
           date: { type: "string", format: "date-time" }
+        }
+      }
+    },
+    balances: {
+      type: "array", items: {
+        type: "object",
+        required: ["uuid", "date", "minPressure", "maxPressure", "heartFrequency", "weight", "diuresis", "osLiquids", "intravenousLiquidsVolume"],
+        properties: {
+          uuid: { type: "string", minLength: 1, maxLength: 50 },
+          date: { type: "string", format: "date-time" },
+          minPressure: { type: "integer" },
+          maxPressure: { type: "integer" },
+          heartFrequency: { type: "integer" },
+          weight: { type: "number" },
+          diuresis: { type: "integer" },
+          fecesCount: { type: "integer" },
+          fecesTexture: { type: "string", minLength: 1, maxLength: 30 },
+          ostomyVolume: { type: "integer" },
+          pegVolume: { type: "integer" },
+          otherGastrointestinalLosses: { type: "string", minLength: 1, maxLength: 512 },
+          parenteralNutritionVolume: { type: "integer" },
+          otherIntravenousLiquids: { type: "string", minLength: 1, maxLength: 512 },
+          osLiquids: { type: "integer" },
+          intravenousLiquidsVolume: { type: "integer" },
         }
       }
     }

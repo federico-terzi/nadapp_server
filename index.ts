@@ -14,6 +14,13 @@ import { HttpError } from "./errors";
 
 const PORT = 8000;
 
+// Number of balances to send to the client in case of a sync response
+export const MAX_BALANCES_PER_SYNC = 100
+
+// Number of meals to send to the client in case of a sync response
+export const MAX_MEALS_PER_SYNC = 100
+
+
 const knex = Knex(KnexConfig.development)
 
 // TODO: improve connection check

@@ -9,11 +9,16 @@ export default class Patient extends Model {
   CF!: string
   birthDate!: string 
   telephone!: string
-  lastServerEdit!: number
+  lastServerEdit!: string
 
   email?: string
   address?: string
   notes?: string
   
   static tableName = 'patients'
+
+  getLastServerEditTimestamp(): number {
+    const date = new Date(this.lastServerEdit)
+    return date.getTime()
+  }
 }
