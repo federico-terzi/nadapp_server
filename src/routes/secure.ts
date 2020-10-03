@@ -18,6 +18,7 @@ const router = Router()
 router.get(
   '/sync',
   async (req, res, next) => {
+    // TODO: test doctor cannot access this endpoint
     try {
       if (!req.user) {
         return res.status(403).json({ message: "missing user information" })

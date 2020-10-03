@@ -1,4 +1,4 @@
-import { Model, Modifiers } from 'objection'
+import { Model } from 'objection'
 
 export default class Patient extends Model {
   id!: number
