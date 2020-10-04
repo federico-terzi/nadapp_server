@@ -3,6 +3,7 @@ import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt"
 import passport from "passport"
 import Patient from "../model/patient"
 import { HttpError } from "../../errors"
+import Doctor from "../model/doctor"
 
 export const configurePassport = () => {
   passport.use("login",
@@ -31,13 +32,13 @@ export const configurePassport = () => {
             return done(new HttpError("bad username content", 400))
           }
 
-          let user: Patient | null = null // TODO: add med category
+          let user: Patient | Doctor | null = null
 
           if (isPatient) {
             user = await Patient.query().select().where("username", "=", username).first()
           }
           if (isMed) {
-            // TODO
+            user = await Doctor.query().select().where("username", "=", username).first()
           } 
           
           if (!user) {
@@ -53,7 +54,9 @@ export const configurePassport = () => {
               patientId: user.id
             }
           } else if (isMed) {
-            // TODO
+            userData = {
+              doctorId: user.id
+            }
           }
 
           return done(null, userData)

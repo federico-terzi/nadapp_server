@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("firstName").notNullable()
     table.string("lastName").notNullable()
     table.date("birthDate").notNullable()
-    table.string("publicTelephone").notNullable()
+    table.string("publicTelephone")
     table.string("email").notNullable()
     table.string("address")
     table.string("notes")
@@ -27,8 +27,8 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTableIfExists("doctors")
-                    .dropTableIfExists("authorized_doctors")
+  return knex.schema.dropTableIfExists("authorized_doctors")
+                    .dropTableIfExists("doctors")
 }
 
 

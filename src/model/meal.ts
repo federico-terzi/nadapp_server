@@ -4,7 +4,7 @@ export default class Meal extends Model {
   id!: number
   patientId!: number
   uuid!: string
-  date!: string 
+  date!: Date 
   meal!: string
   
   static tableName = 'meals'

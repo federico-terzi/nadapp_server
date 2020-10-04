@@ -7,9 +7,9 @@ export default class Patient extends Model {
   firstName!: string
   lastName!: string
   CF!: string
-  birthDate!: string 
+  birthDate!: Date
   telephone!: string
-  lastServerEdit!: string
+  lastServerEdit!: Date
 
   email?: string
   address?: string
@@ -18,7 +18,28 @@ export default class Patient extends Model {
   static tableName = 'patients'
 
   getLastServerEditTimestamp(): number {
-    const date = new Date(this.lastServerEdit)
-    return date.getTime()
+    return this.lastServerEdit.getTime()
+  }
+
+  getShortDescription() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+    }
+  }
+
+  getInfo() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      CF: this.CF,
+      birthDate: this.birthDate,
+      telephone: this.telephone,
+      email: this.email,
+      address: this.address,
+      notes: this.notes,
+    }
   }
 }

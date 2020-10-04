@@ -4,7 +4,7 @@ export default class Balance extends Model {
   id!: number
   patientId!: number
   uuid!: string
-  date!: string 
+  date!: Date 
   minPressure!: number
   maxPressure!: number
   heartFrequency!: number
