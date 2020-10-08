@@ -5,14 +5,13 @@ export default class Balance extends Model {
   patientId!: number
   uuid!: string
   date!: Date 
-  minPressure!: number
-  maxPressure!: number
-  heartFrequency!: number
-  weight!: number
-  diuresis!: number
-  osLiquids!: number
-  intravenousLiquidsVolume!: number
   
+  minPressure?: number
+  maxPressure?: number
+  heartFrequency?: number
+  weight?: number
+  diuresis?: number
+  osLiquids?: number
   fecesCount?: number
   fecesTexture?: string
   ostomyVolume?: number
@@ -27,13 +26,12 @@ export default class Balance extends Model {
     return {
       uuid: this.uuid,
       date: this.date,
-      minPressure: this.minPressure,
-      maxPressure: this.maxPressure,
-      heartFrequency: this.heartFrequency,
-      weight: this.weight,
-      diuresis: this.diuresis,
-      osLiquids: this.osLiquids,
-      intravenousLiquidsVolume: this.intravenousLiquidsVolume,
+      minPressure: this.minPressure ?? undefined,
+      maxPressure: this.maxPressure ?? undefined,
+      heartFrequency: this.heartFrequency ?? undefined,
+      weight: this.weight ?? undefined,
+      diuresis: this.diuresis ?? undefined,
+      osLiquids: this.osLiquids ?? undefined,
       fecesCount: this.fecesCount ?? undefined,
       fecesTexture: this.fecesTexture ?? undefined,
       ostomyVolume: this.ostomyVolume ?? undefined,

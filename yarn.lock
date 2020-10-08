@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@casl/ability@^4.1.6":
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-4.1.6.tgz#89f263903adfc9316cedff329ad615564662448a"
-  integrity sha512-ZI30fRacHKCCrWJn1pmxx/+IKUkoycVNz+Mge9EeIH+esDT7nydgWbitVPnlBAbxQXz5eybPAvfPSg3WOa2izw==
-  dependencies:
-    sift "^13.0.0"
-
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -2646,11 +2639,6 @@ setprototypeof@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
-
-sift@^13.0.0:
-  version "13.3.5"
-  resolved "https://registry.yarnpkg.com/sift/-/sift-13.3.5.tgz#de08275e1427731e1fe25192f88786e38bbfa89e"
-  integrity sha512-apSwBXO0Xpl7zGb26xwq7KGre9/WwyzMxUv0zmI6mLpDJQGOX+CynBgKDaSrn+AXuAuiS4orQo1ty6bU+OEN/Q==
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"
