@@ -15,19 +15,16 @@ export const configurePassport = () => {
         try {
           const isPatient = prefixedUser.startsWith("patient@");
           const isMed = prefixedUser.startsWith("med@");
-          // TODO: test login without category
           if (!isMed && !isPatient) {
             return done(new HttpError("invalid category", 400))
           }
 
-          const tokens = prefixedUser.match(/.*?@(.*)/)
-          // TODO: add test
+          const tokens = prefixedUser.match(/.+?@(.+)/)
           if (!tokens) {
             return done(new HttpError("bad username format", 400))
           }
 
           const username: string = tokens[1]
-          // TODO: test
           if (!username || username.trim().length == 0) {
             return done(new HttpError("bad username content", 400))
           }

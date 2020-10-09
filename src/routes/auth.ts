@@ -1,6 +1,8 @@
 import { Router } from "express"
 import passport from "passport"
 import jwt from "jsonwebtoken"
+import { HttpError } from "../../errors";
+import config from "config"
 
 const router = Router()
 
@@ -15,9 +17,8 @@ router.post(
             return next(err);
           }
           
-          if (err || !user) {
-            const error = new Error('An error occurred.');
-
+          if (!user) {
+            const error = new HttpError("bad login request", 400);
             return next(error);
           }
 
@@ -27,7 +28,7 @@ router.post(
             async (error) => {
               if (error) return next(error);
 
-              const token = jwt.sign({ user }, 'TOP_SECRET') // TODO: change JWT secret
+              const token = jwt.sign({ user }, config.get("JWTSecret"))
 
               return res.json({ token });
             }

@@ -2,26 +2,25 @@ import express, { NextFunction } from "express"
 import Knex from "knex";
 import { Model } from "objection"
 import * as bodyParser from "body-parser"
-import KnexConfig from "./knexfile"
 import passport from "passport"
-import jwt from "jsonwebtoken"
-import { Strategy as LocalStrategy } from "passport-local"
-import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt"
 import secureRoutes from "./src/routes/secure"
 import authRoutes from "./src/routes/auth"
-import { configurePassport } from "./src/auth/passport";
-import { HttpError } from "./errors";
+import { configurePassport } from "./src/auth/passport"
+import { HttpError } from "./errors"
+import config from "config"
 
 const PORT = 8000;
 
+// TODO: move the following two constants to another file
 // Number of balances to send to the client in case of a sync response
 export const MAX_BALANCES_PER_SYNC = 100
 
 // Number of meals to send to the client in case of a sync response
 export const MAX_MEALS_PER_SYNC = 100
 
+console.log("starting with environment:", config.util.getEnv("NODE_ENV"))
 
-const knex = Knex(KnexConfig.development)
+const knex = Knex(config.get("DBConfig"))
 
 // TODO: improve connection check
 knex.raw('select 1+1 as result').catch(err => {
@@ -45,21 +44,6 @@ app.use('/api', passport.authenticate('jwt', { session: false }), secureRoutes)
 app.use('/auth', authRoutes)
 app.get('/', (req, res) => res.send('Express + TypeScript Server'))
 
-/*
-app.get('/movies/:id', async (req,res) => {
-    const movie = await Movie.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
-    if (movie){
-        res.json(movie);
-    } else {
-        res.status(404).send({message: "Movie not found"})
-    }
-});
-*/
-
 // Handle errors.
 app.use((err: any, req: any, res: any, next: NextFunction) => {
   if (err instanceof HttpError) {
@@ -73,10 +57,13 @@ app.use((err: any, req: any, res: any, next: NextFunction) => {
     res.json({ error: "internal error" })
   }
   
-  // TODO: hide in production
-  console.log(err);
+  if (config.get("logErrorsToConsole")) {
+    console.log(err);
+  }
 })
 
 app.listen(PORT, () => {
   console.log(`[server]: Server is running at https://localhost:${PORT}`);
 })
+
+export default app
