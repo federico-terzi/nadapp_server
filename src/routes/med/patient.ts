@@ -9,11 +9,14 @@ const router = Router({
 
 // Middleware to check that the current doctor can access the patient
 router.use(async (req, res, next) => {
-  // TODO: unauthorized doctor cannot access this route
   try {
-    const patientId = parseInt(req.params.id); // TODO: test passing string
+    const patientId = parseInt(req.params.id);
+    if (isNaN(patientId)) {
+      throw new HttpError("bad patient id format", 400)
+    }
+
     const doctor = res.locals.doctor as Doctor
-    if (!doctor.canReadPatient(patientId)) {
+    if (!await doctor.canReadPatient(patientId)) {
       throw new HttpError("missing patient authorization", 403)
     }
 
@@ -30,11 +33,11 @@ router.get(
   async (req, res, next) => {
     try {
       const patientId = res.locals.patientId as number;
-      const patient: Patient = await Patient.query().findById(patientId) // TODO: test unauthorized patient
+      const patient: Patient = await Patient.query().findById(patientId)
       const jsonPatient = patient.getInfo()
 
       res.json({
-        patients: jsonPatient,
+        info: jsonPatient,
       })
     } catch (err) {
       next(err)

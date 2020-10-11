@@ -1,5 +1,6 @@
 import config from "config"
 import Knex from "knex"
+import { Model } from "objection"
 import app from "../.."
 
 // This module is executed before the nested ones, making it possible
@@ -7,6 +8,8 @@ import app from "../.."
 // on a clean database
 
 const knex = Knex(config.get("DBConfig"))
+
+Model.knex(knex)
 
 // Make sure we are in the testing environment before destroying the database
 if (config.util.getEnv("NODE_ENV") !== "test") {

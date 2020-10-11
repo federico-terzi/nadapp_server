@@ -40,5 +40,9 @@ export async function seed(knex: Knex): Promise<void> {
       doctorId: 2,
       patientId: 2,
     },
+    { 
+      doctorId: 2,
+      patientId: 3,
+    },
   ])
 };

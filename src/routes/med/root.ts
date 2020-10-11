@@ -9,19 +9,18 @@ const router = Router()
 
 // Middleware to check the current user is a doctor 
 router.use(async (req, res, next) => {
-  // TODO: test patient cannot access this endpoint
   try {
     if (!req.user) {
-      return res.status(403).json({ message: "missing user information" })
+      throw new HttpError("missing user information", 403)
     }
     const userInfo = req.user as LoginDoctorInfo
     if (!userInfo.doctorId) {
-      return res.status(403).json({ message: "missing doctor information" })
+      throw new HttpError("missing doctor information", 403)
     }
 
     const doctorInfo = await Doctor.query().findById(userInfo.doctorId)
     if (!doctorInfo) {
-      return res.status(404).json({ message: "doctor not found" })
+      throw new HttpError("doctor not found", 404)
     }
 
     res.locals.doctor = doctorInfo
@@ -36,13 +35,16 @@ router.get(
   '/patients',
   async (req, res, next) => {
     try {
-      // TODO: test
       const doctor = res.locals.doctor as Doctor
 
-      // TODO: if admin, view all patients
-      const authorizedPatients: Patient[] = await doctor.$relatedQuery<Patient>("patients")
+      let authorizedPatients: Patient[]
+      if (doctor.isAdmin()) {
+        authorizedPatients = await Patient.query().select()
+      } else {
+        authorizedPatients = await doctor.$relatedQuery<Patient>("patients")
+      }
       const jsonPatients = authorizedPatients.map(patient => patient.getShortDescription())
-
+      
       res.json({
         patients: jsonPatients,
       })

@@ -26,13 +26,21 @@ export default class Doctor extends Model {
         from: 'doctors.id',
         through: {
           // authorized_doctors is the join table.
-          from: 'authorized_doctors.patientId',
-          to: 'authorized_doctors.doctorId'
+          from: 'authorized_doctors.doctorId',
+          to: 'authorized_doctors.patientId'
         },
         to: 'patients.id'
       }
     }
   };
+
+  isAdmin(): boolean {
+    if (this.role === "admin") {
+      return true
+    } else {
+      return false
+    }
+  }
 
   async canReadPatient(patientId: number) {
     if (this.role === "admin") { // Current doctor is an admin

@@ -1,11 +1,11 @@
 import { Router } from "express"
-import patientRoutes from "./patient"
-import medRoutes from "./med/med";
+import mobileRoutes from "./mobile"
+import medRoutes from "./med/root";
 import adminRoutes from "./admin";
 
 const router = Router()
 
-router.use("/patient", patientRoutes)
+router.use("/mobile", mobileRoutes)
 router.use("/admin", adminRoutes)
 router.use("/med", medRoutes)
 

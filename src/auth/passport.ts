@@ -4,6 +4,7 @@ import passport from "passport"
 import Patient from "../model/patient"
 import { HttpError } from "../../errors"
 import Doctor from "../model/doctor"
+import config from "config"
 
 export const configurePassport = () => {
   passport.use("login",
@@ -81,7 +82,7 @@ export const configurePassport = () => {
   passport.use(
     new JWTStrategy(
       {
-        secretOrKey: 'TOP_SECRET',  // TODO: change secret
+        secretOrKey: config.get("JWTSecret"),
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
       },
       async (token, done) => {

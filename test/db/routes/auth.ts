@@ -100,4 +100,5 @@ describe("login", () => {
 
   // TODO: check login patient with invalid credentials
   // TODO: check login doctor with invalid credentials
+  // TODO: spid login
 })

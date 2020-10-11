@@ -32,5 +32,18 @@ export async function seed(knex: Knex): Promise<void> {
       email: "caterina.verdi@gmail.com",
       address: "Via Bologna 25, \nGenova",
     },
+    { 
+      id: 3,
+      username: "maria.lambertini",
+      hash: "TOBEDEFINED",
+      firstName: "Maria",
+      lastName: "Lambertini",
+      CF: "LMBMRA89E174LSJD2",
+      birthDate: "1989-05-10",
+      telephone: "3332121999",
+      lastServerEdit: new Date().toISOString(),
+      email: "maria.lambertini@gmail.com",
+      address: "Via Augusti 56, \nNapoli",
+    },
   ]);
 };
