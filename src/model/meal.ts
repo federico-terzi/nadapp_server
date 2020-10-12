@@ -9,7 +9,7 @@ export default class Meal extends Model {
   
   static tableName = 'meals'
 
-  syncJson() {
+  getInfo() {
     return {
       uuid: this.uuid,
       date: this.date,

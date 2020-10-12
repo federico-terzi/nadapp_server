@@ -45,4 +45,7 @@ export async function seed(knex: Knex): Promise<void> {
       patientId: 3,
     },
   ])
+
+  // Update the increments counter to avoid this problem: https://github.com/knex/knex/issues/1855
+  await knex.raw("SELECT setval('doctors_id_seq', (SELECT max(id) FROM doctors))")
 };

@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { MAX_BALANCES_PER_SYNC, MAX_MEALS_PER_SYNC } from "../..";
+import { HttpError } from "../../errors";
 import { LoginPatientInfo } from "../model/apiTypes";
 import Balance from "../model/balance";
 import Meal from "../model/meal";
@@ -10,19 +11,18 @@ const router = Router()
 
 // Middleware to check the current user is a patient
 router.use(async (req, res, next) => {
-  // TODO: test doctor cannot access this endpoint
   try {
     if (!req.user) {
-      return res.status(403).json({ message: "missing user information" })
+      throw new HttpError("missing user information", 403)
     }
     const userInfo = req.user as LoginPatientInfo
     if (!userInfo.patientId) {
-      return res.status(403).json({ message: "missing patient information" })
+      throw new HttpError("missing patient information", 403)
     }
 
     const patientInfo = await Patient.query().findById(userInfo.patientId)
     if (!patientInfo) {
-      return res.status(404).json({ message: "patient not found" })
+      throw new HttpError("patient not found", 404)
     }
 
     res.locals.patient = patientInfo
@@ -80,31 +80,29 @@ router.post(
               await trx.raw(`INSERT INTO balances ("patientId", "uuid", "date", "minPressure", "maxPressure",
               "heartFrequency", "weight", "diuresis", "fecesCount", "fecesTexture", "ostomyVolume", 
               "pegVolume", "otherGastrointestinalLosses", "parenteralNutritionVolume", "otherIntravenousLiquids", 
-              "osLiquids", "intravenousLiquidsVolume") 
+              "osLiquids") 
               VALUES (:patientId, :uuid, :date, :minPressure, :maxPressure, :heartFrequency, 
                 :weight, :diuresis, :fecesCount, :fecesTexture, :ostomyVolume, :pegVolume, 
                 :otherGastrointestinalLosses, :parenteralNutritionVolume, :otherIntravenousLiquids, 
-                :osLiquids, :intravenousLiquidsVolume ) 
+                :osLiquids ) 
               ON CONFLICT ("patientId", "uuid") 
               DO UPDATE SET ("date", "minPressure", "maxPressure",
               "heartFrequency", "weight", "diuresis", "fecesCount", "fecesTexture", "ostomyVolume", 
               "pegVolume", "otherGastrointestinalLosses", "parenteralNutritionVolume", "otherIntravenousLiquids", 
-              "osLiquids", "intravenousLiquidsVolume") = (EXCLUDED.date, EXCLUDED."minPressure", EXCLUDED."maxPressure",
+              "osLiquids") = (EXCLUDED.date, EXCLUDED."minPressure", EXCLUDED."maxPressure",
               EXCLUDED."heartFrequency", EXCLUDED."weight", EXCLUDED."diuresis", EXCLUDED."fecesCount", EXCLUDED."fecesTexture", 
               EXCLUDED."ostomyVolume", EXCLUDED."pegVolume", EXCLUDED."otherGastrointestinalLosses", 
-              EXCLUDED."parenteralNutritionVolume", EXCLUDED."otherIntravenousLiquids", EXCLUDED."osLiquids", 
-              EXCLUDED."intravenousLiquidsVolume")`,
+              EXCLUDED."parenteralNutritionVolume", EXCLUDED."otherIntravenousLiquids", EXCLUDED."osLiquids")`,
                 {
                   patientId: patient.id,
                   uuid: balance.uuid,
                   date: balance.date,
-                  minPressure: balance.minPressure,
-                  maxPressure: balance.maxPressure,
-                  heartFrequency: balance.heartFrequency,
-                  weight: balance.weight,
-                  diuresis: balance.diuresis,
-                  osLiquids: balance.osLiquids,
-                  intravenousLiquidsVolume: balance.intravenousLiquidsVolume,
+                  minPressure: balance.minPressure ?? null,
+                  maxPressure: balance.maxPressure ?? null,
+                  heartFrequency: balance.heartFrequency ?? null,
+                  weight: balance.weight ?? null,
+                  diuresis: balance.diuresis ?? null,
+                  osLiquids: balance.osLiquids ?? null,
                   fecesCount: balance.fecesCount ?? null,
                   fecesTexture: balance.fecesTexture ?? null,
                   ostomyVolume: balance.ostomyVolume ?? null,
@@ -122,11 +120,11 @@ router.post(
       if (req.body.lastServerEdit < patient.getLastServerEditTimestamp()) {
         const meals = await Meal.query().select().where("patientId", "=", patient.id)
           .limit(MAX_MEALS_PER_SYNC).orderBy("date", "desc");
-        const jsonMeals = meals.map(meal => meal.syncJson())
+        const jsonMeals = meals.map(meal => meal.getInfo())
 
         const balances = await Balance.query().select().where("patientId", "=", patient.id)
           .limit(MAX_BALANCES_PER_SYNC).orderBy("date", "desc");
-        const jsonBalances = balances.map(balance => balance.syncJson())
+        const jsonBalances = balances.map(balance => balance.getInfo())
 
         // TODO: add doctors
         res.json({
@@ -142,6 +140,7 @@ router.post(
         })
       }
     } catch (err) {
+      console.log(err)
       next(err)
     }
   }

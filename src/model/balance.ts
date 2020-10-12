@@ -22,7 +22,7 @@ export default class Balance extends Model {
   
   static tableName = 'balances'
 
-  syncJson() {
+  getInfo() {
     return {
       uuid: this.uuid,
       date: this.date,

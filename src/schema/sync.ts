@@ -20,7 +20,7 @@ export const syncValidator = new Ajv().compile({
     balances: {
       type: "array", items: {
         type: "object",
-        required: ["uuid", "date", "minPressure", "maxPressure", "heartFrequency", "weight", "diuresis", "osLiquids", "intravenousLiquidsVolume"],
+        required: ["uuid", "date"],
         properties: {
           uuid: { type: "string", minLength: 1, maxLength: 50 },
           date: { type: "string", format: "date-time" },
