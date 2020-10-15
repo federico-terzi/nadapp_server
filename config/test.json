@@ -18,5 +18,6 @@
     "debug": false
   },
   "JWTSecret": "TEST_SECRET",
-  "logErrorsToConsole": true
+  "logErrorsToConsole": true,
+  "uploadDestinationDir": "tmp"
 }

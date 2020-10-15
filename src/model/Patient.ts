@@ -1,4 +1,5 @@
 import { Model } from 'objection'
+import Report from './report'
 
 export default class Patient extends Model {
   id!: number
@@ -37,9 +38,17 @@ export default class Patient extends Model {
           },
           to: 'doctors.id'
         }
+      },
+      reports: {
+        relation: Model.HasManyRelation,
+        modelClass: Report,
+        join: {
+          from: 'patients.id',
+          to: 'reports.patientId'
+        }
       }
     }
-  };
+  }
 
   getLastServerEditTimestamp(): number {
     return this.lastServerEdit.getTime()

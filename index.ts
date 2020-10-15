@@ -8,6 +8,7 @@ import authRoutes from "./src/routes/auth"
 import { configurePassport } from "./src/auth/passport"
 import { HttpError } from "./errors"
 import config from "config"
+import fileUpload from "express-fileupload";
 
 const PORT = 8000;
 
@@ -36,6 +37,10 @@ configurePassport()
 
 app.use(bodyParser.json({
   limit: "50mb",  // TODO: think about reasonable limit
+}))
+app.use(fileUpload({
+  abortOnLimit: true,
+  limits: { fileSize: 50 * 1024 * 1024 },
 }))
 
 app.use(passport.initialize())
