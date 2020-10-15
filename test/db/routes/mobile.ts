@@ -55,8 +55,8 @@ describe("mobile", () => {
 
   it("first sync should dump all information", async () => {
     const patient = await Patient.query().findById(1)
-    const meals = (await Meal.query().findByIds([1,2])).map(meal => meal.getInfo())
-    const balances = (await Balance.query().findByIds([1,2,4])).map(balance => balance.getInfo())
+    const meals = (await Meal.query().findByIds([1,2]).orderBy("date", "desc")).map(meal => meal.getInfo())
+    const balances = (await Balance.query().findByIds([1,2,4]).orderBy("date", "desc")).map(balance => balance.getInfo())
     const res = await authRequest(app)
       .loginAsPatient(1)
       .post("/api/mobile/sync")

@@ -10,21 +10,21 @@ export async function seed(knex: Knex): Promise<void> {
       id: 1,
       uuid: "abb7723c-7890-4a4f-8e3d-ed158b2416b5",
       patientId: 1,
-      date: new Date().toISOString(),
+      date: "2020-10-15T11:50:20.376Z",
       meal: "Pasta al pomodoro 100 grammi"
     },
     { 
       id: 2,
       uuid: "be4c5118-432e-4402-b9c0-9db53a64b7e2",
       patientId: 1,
-      date: new Date().toISOString(),
+      date: "2020-10-15T11:51:20.376Z",
       meal: "Bistecca di pollo 80 grammi"
     },
     { 
       id: 3,
       uuid: "a514ce42-4b62-4797-a589-36a0bf1571d7",
       patientId: 2,
-      date: new Date().toISOString(),
+      date: "2020-10-15T11:52:20.376Z",
       meal: "Riso bollito 70 grammi"
     },
   ]);
