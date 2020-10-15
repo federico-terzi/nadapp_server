@@ -3,6 +3,7 @@ import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
 import { authRequest, renderJson } from "../../../testUtils";
 import Patient from "../../../../src/model/patient";
+import Doctor from "../../../../src/model/doctor";
 
 chai.use(chaiHttp)
 
@@ -66,6 +67,22 @@ describe("doctor (patient-profile)", () => {
     expect(res).to.have.status(400)
     expect(res.body).to.be.deep.eq({
       error: "bad patient id format",
+    })
+  })
+
+  it("authorized doctor should see patient authorized doctors correctly", async () => {
+    const patient = renderJson((await Patient.query().findById(3)).getInfo())
+    const doctor = renderJson((await Doctor.query().findById(2)).getShortInfo())
+    const res = await authRequest(app)
+      .loginAsDoctor(2)
+      .get("/api/med/patient/3/doctors")
+      .build()
+      .send()
+    expect(res).to.have.status(200)
+    expect(res.body).to.be.deep.eq({
+      doctors: [
+        doctor
+      ],
     })
   })
 })

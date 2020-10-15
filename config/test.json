@@ -17,5 +17,6 @@
     },
     "debug": false
   },
-  "JWTSecret": "TEST_SECRET"
+  "JWTSecret": "TEST_SECRET",
+  "logErrorsToConsole": true
 }

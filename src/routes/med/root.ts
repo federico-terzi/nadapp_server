@@ -43,7 +43,7 @@ router.get(
       } else {
         authorizedPatients = await doctor.$relatedQuery<Patient>("patients")
       }
-      const jsonPatients = authorizedPatients.map(patient => patient.getShortDescription())
+      const jsonPatients = authorizedPatients.map(patient => patient.getShortInfo())
       
       res.json({
         patients: jsonPatients,

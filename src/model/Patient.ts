@@ -17,11 +17,35 @@ export default class Patient extends Model {
   
   static tableName = 'patients'
 
+  static get modelPaths() {
+    return [__dirname];
+  }
+
+  static get relationMappings() {
+    // Use require to avoid circular dependency
+    // See: https://vincit.github.io/objection.js/guide/relations.html#require-loops
+    return {
+      doctors: {
+        relation: Model.ManyToManyRelation,
+        modelClass: "Doctor",
+        join: {
+          from: 'patients.id',
+          through: {
+            // authorized_doctors is the join table.
+            from: 'authorized_doctors.patientId',
+            to: 'authorized_doctors.doctorId'
+          },
+          to: 'doctors.id'
+        }
+      }
+    }
+  };
+
   getLastServerEditTimestamp(): number {
     return this.lastServerEdit.getTime()
   }
 
-  getShortDescription() {
+  getShortInfo() {
     return {
       id: this.id,
       firstName: this.firstName,

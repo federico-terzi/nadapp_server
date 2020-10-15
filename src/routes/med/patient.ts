@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { HttpError } from "../../../errors";
 import Doctor from "../../model/doctor";
+import Meal from "../../model/meal";
 import Patient from "../../model/patient";
 
 const router = Router({
@@ -38,6 +39,46 @@ router.get(
 
       res.json({
         info: jsonPatient,
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
+router.get(
+  '/doctors',
+  async (req, res, next) => {
+    try {
+      const patientId = res.locals.patientId as number;
+      const authorizedDoctors = await Patient.relatedQuery<Doctor>("doctors").for(patientId)
+      const jsonDoctors = authorizedDoctors.map(doctor => doctor.getShortInfo())
+
+      // TODO: only the admin should see the authorized doctors?
+      // TODO: test unauthorized
+
+      res.json({
+        doctors: jsonDoctors,
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
+// TODO: referti
+
+router.get(
+  '/meals',
+  async (req, res, next) => {
+    try {
+      const patientId = res.locals.patientId as number;
+      const meals = await Meal.query().where("patientId", patientId).orderBy("date", "desc")
+      
+      // TODO
+
+      res.json({
+        //doctors: jsonDoctors,
       })
     } catch (err) {
       next(err)

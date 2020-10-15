@@ -7,11 +7,11 @@ export default class Doctor extends Model {
   hash!: string
   firstName!: string
   lastName!: string
-  birthDate!: Date
   telephone!: string
   email!: string
   role!: string
   title?: string
+  CF?: string
   publicTelephone?: string
   address?: string
   notes?: string
@@ -55,6 +55,18 @@ export default class Doctor extends Model {
       return result.length == 1
     } else {
       throw new Error("invalid doctor role")
+    }
+  }
+
+  getShortInfo() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      title: this.title,
+      publicTelephone: this.publicTelephone,
+      email: this.email,
+      address: this.address,
     }
   }
 }
