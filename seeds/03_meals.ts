@@ -27,6 +27,13 @@ export async function seed(knex: Knex): Promise<void> {
       date: "2020-10-15T11:52:20.376Z",
       meal: "Riso bollito 70 grammi"
     },
+    { 
+      id: 4,
+      uuid: "a6a12552-f2b8-4453-bc70-c011ad49cd33",
+      patientId: 2,
+      date: "2020-10-15T11:53:20.376Z",
+      meal: "Petto di pollo 50 grammi"
+    },
   ]);
 
   // Update the increments counter to avoid this problem: https://github.com/knex/knex/issues/1855

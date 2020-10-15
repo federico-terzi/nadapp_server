@@ -5,6 +5,8 @@ export default class Report extends Model {
   patientId!: number
   date!: Date 
   location!: string
+  iv!: string
+  key!: string
   
   static tableName = 'reports'
 
@@ -13,5 +15,11 @@ export default class Report extends Model {
       id: this.id,
       date: this.date,
     }
+  }
+
+  getIVKey(): [iv: Buffer, key: Buffer] {
+    const ivBuffer = Buffer.from(this.iv, "base64")
+    const keyBuffer = Buffer.from(this.key, "base64")
+    return [ivBuffer, keyBuffer]
   }
 }

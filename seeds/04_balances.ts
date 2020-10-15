@@ -55,6 +55,13 @@ export async function seed(knex: Knex): Promise<void> {
       minPressure: 64,
       maxPressure: 115,
     },
+    { 
+      id: 5,
+      uuid: "2991a527-4105-469c-aa51-db2aa0693b8f",
+      patientId: 2,
+      date: "2020-10-15T11:56:20.376Z",
+      minPressure: 61,
+    },
   ]);
 
   // Update the increments counter to avoid this problem: https://github.com/knex/knex/issues/1855

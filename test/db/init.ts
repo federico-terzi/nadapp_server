@@ -2,6 +2,11 @@ import config from "config"
 import Knex from "knex"
 import { Model } from "objection"
 import app from "../.."
+import fs from "fs"
+import util from "util"
+import fsExtra from "fs-extra"
+
+const mkdir = util.promisify(fs.mkdir)
 
 // This module is executed before the nested ones, making it possible
 // to run a seed+clean up step between tests, so that each test runs
@@ -28,6 +33,11 @@ before(async () => {
   console.log("Run the migrations")
   // Run migrations
   await knex.migrate.latest()
+
+  // Creating upload destination directory if missing
+  if (!fs.existsSync(config.get("uploadDestinationDir"))) {
+    await mkdir(config.get("uploadDestinationDir"))
+  }
 })
 
 beforeEach(async () => {
@@ -38,4 +48,7 @@ beforeEach(async () => {
 after(() => {
   // Release the connection to allow mocha to exit
   knex.destroy()
+
+  // Delete all the temporary uploaded files
+  fsExtra.emptyDirSync(config.get("uploadDestinationDir"))
 })

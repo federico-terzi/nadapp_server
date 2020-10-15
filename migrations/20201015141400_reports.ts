@@ -8,6 +8,8 @@ export async function up(knex: Knex): Promise<void> {
          .references("id").inTable("patients").onDelete("CASCADE").index()
     table.date("date").notNullable()
     table.string("location").notNullable()
+    table.string("iv").notNullable()
+    table.string("key").notNullable()
   })
 }
 

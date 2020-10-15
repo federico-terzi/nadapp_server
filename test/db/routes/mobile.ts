@@ -214,7 +214,7 @@ describe("mobile", () => {
   it("add balance works correctly", async () => {
     const patient = await Patient.query().findById(2)
     const balances = await Balance.query().select().where("patientId", patient.id)
-    expect(balances.map(balance => balance.id)).to.be.deep.eq([3])
+    expect(balances.map(balance => balance.id)).to.be.deep.eq([3, 5])
 
     const newBalances = [
       { 
