@@ -34,8 +34,24 @@ router.use(async (req, res, next) => {
   }
 })
 
+router.get(
+  '/doctors',
+  async (req, res, next) => {
+    try {
+      const doctors = await Doctor.query().orderBy("lastName", "asc")
+      const jsonDoctors = doctors.map(doctor => doctor.getShortInfo())
+      
+      res.json({
+        doctors: jsonDoctors,
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
 router.post(
-  '/patient',
+  '/patients',
   async (req, res, next) => {
     try {
       const doctor = res.locals.doctor as Doctor
@@ -83,6 +99,6 @@ router.post(
   }
 );
 
-router.use("/patient/:id", patientRoutes);
+router.use("/patients/:id", patientRoutes);
 
 export default router

@@ -54,6 +54,14 @@ export default class Patient extends Model {
     return this.lastServerEdit.getTime()
   }
 
+  getNameInfo() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+    }
+  }
+
   getShortInfo() {
     return {
       id: this.id,

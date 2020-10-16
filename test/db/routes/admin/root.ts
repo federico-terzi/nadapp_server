@@ -1,13 +1,15 @@
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
 import app from "../../../../index";
-import { authRequest, RequestMethods } from "../../../testUtils";
+import Doctor from "../../../../src/model/doctor";
+import { authRequest, renderJson, RequestMethods } from "../../../testUtils";
 
 chai.use(chaiHttp)
 
 describe("/admin permission check", () => {
   const endpoints = [
-    "/api/admin/patient/add"
+    "/api/admin/patients",
+    "/api/admin/doctors",
   ]
 
   it("not-logged in user cannot access admin endpoints", async () => {
@@ -53,5 +55,20 @@ describe("/admin permission check", () => {
         })
       }
     }
+  })
+})
+
+describe("admin (doctors)", () => {
+  it("admin can see all doctors correctly", async () => {
+    const doctors = (await Doctor.query().orderBy("lastName", "asc")).map(doctor => doctor.getShortInfo())
+    const res = await authRequest(app)
+      .loginAsDoctor(1) // Admin
+      .get("/api/admin/doctors")
+      .build()
+      .send()
+
+    expect(res).to.have.status(200)
+    expect(res.body).to.have.property("doctors")
+    expect(res.body.doctors).to.be.deep.eq(renderJson(doctors))
   })
 })

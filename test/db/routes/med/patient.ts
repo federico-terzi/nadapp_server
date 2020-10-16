@@ -19,7 +19,7 @@ describe("med (patient-info)", () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/info")
+      .get("/api/med/patients/3/info")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -32,7 +32,7 @@ describe("med (patient-info)", () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .get("/api/med/patient/3/info")
+      .get("/api/med/patients/3/info")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -44,7 +44,7 @@ describe("med (patient-info)", () => {
   it("invalid string as patient id should not crash", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/abc/info")
+      .get("/api/med/patients/abc/info")
       .build()
       .send()
     expect(res).to.have.status(400)
@@ -56,7 +56,7 @@ describe("med (patient-info)", () => {
   it("non-existent patient id should not crash", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/9999/info")
+      .get("/api/med/patients/9999/info")
       .build()
       .send()
     expect(res).to.have.status(403)
@@ -72,7 +72,7 @@ describe("med (patient-doctors)", () => {
     const doctor = renderJson((await Doctor.query().findById(2)).getShortInfo())
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/doctors")
+      .get("/api/med/patients/3/doctors")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -93,7 +93,7 @@ describe("med (patient-meals)", () => {
     const jsonMeals = renderJson(meals)
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/2/meals")
+      .get("/api/med/patients/2/meals")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -110,7 +110,7 @@ describe("med (patient-balances)", () => {
     const jsonBalances = renderJson(balances)
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/2/balances")
+      .get("/api/med/patients/2/balances")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -125,19 +125,19 @@ describe("med (patient-reports)", () => {
     // Load some reports
     await authRequest(app)
       .loginAsDoctor(1)
-      .post("/api/med/patient/1/report/upload")
+      .post("/api/med/patients/1/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
     await authRequest(app)
       .loginAsDoctor(1)
-      .post("/api/med/patient/3/report/upload")
+      .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
     await authRequest(app)
       .loginAsDoctor(1)
-      .post("/api/med/patient/3/report/upload")
+      .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
   })
@@ -147,7 +147,7 @@ describe("med (patient-reports)", () => {
     expect(reports.length).to.be.eq(2)
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/reports")
+      .get("/api/med/patients/3/reports")
       .build()
       .send()
     expect(res).to.have.status(200)
@@ -159,7 +159,7 @@ describe("med (patient-reports)", () => {
   it("authorized doctor should download report", (done) => {
     authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/report/2/download")
+      .get("/api/med/patients/3/reports/2/download")
       .build()
       .buffer()
       .parse(binaryParser)
@@ -179,7 +179,7 @@ describe("med (patient-reports)", () => {
   it("report mismatch with patient", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/report/1/download")  // Report 1 does not belong to patient 3
+      .get("/api/med/patients/3/reports/1/download")  // Report 1 does not belong to patient 3
       .build()
       .send()
     expect(res).to.have.status(403)
@@ -191,7 +191,7 @@ describe("med (patient-reports)", () => {
   it("non-existing report", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .get("/api/med/patient/3/report/9999/download")  // Report 1 does not belong to patient 3
+      .get("/api/med/patients/3/reports/9999/download")  // Report 1 does not belong to patient 3
       .build()
       .send()
     expect(res).to.have.status(404)
@@ -208,7 +208,7 @@ describe("med (patient-reports)", () => {
 
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .post("/api/med/patient/3/report/upload")
+      .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
     expect(res).to.have.status(200)
@@ -233,7 +233,7 @@ describe("med (patient-reports)", () => {
   it("upload without file should fail", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .post("/api/med/patient/3/report/upload")
+      .post("/api/med/patients/3/reports/upload")
       .build()
       .send()
     expect(res).to.have.status(400)
@@ -248,7 +248,7 @@ describe("med (patient-reports)", () => {
 
     const res = await authRequest(app)
       .loginAsDoctor(2)
-      .post("/api/med/patient/1/report/upload")
+      .post("/api/med/patients/1/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
     expect(res).to.have.status(403)

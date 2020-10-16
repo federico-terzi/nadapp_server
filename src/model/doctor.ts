@@ -69,4 +69,13 @@ export default class Doctor extends Model {
       address: this.address,
     }
   }
+  
+  getNameInfo() {
+    return {
+      id: this.id,
+      title: this.title,
+      firstName: this.firstName,
+      lastName: this.lastName,
+    }
+  }
 }

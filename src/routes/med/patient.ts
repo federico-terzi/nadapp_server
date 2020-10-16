@@ -129,7 +129,7 @@ router.get(
 );
 
 router.get(
-  '/report/:reportId/download',
+  '/reports/:reportId/download',
   async (req, res, next) => {
     try {
       const patientId = res.locals.patientId as number;
@@ -168,7 +168,7 @@ router.get(
 );
 
 router.post(
-  '/report/upload',
+  '/reports/upload',
   async (req, res, next) => {
     try {
       const patientId = res.locals.patientId as number;

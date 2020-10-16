@@ -10,7 +10,7 @@ describe("admin (patient-info)", () => {
   it("admin can edit patient info", async () => {
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .put("/api/admin/patient/3/info")
+      .put("/api/admin/patients/3/info")
       .build()
       .send({
         firstName: "Luca",
@@ -44,7 +44,7 @@ describe("admin (patient-info)", () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .put("/api/admin/patient/3/info")
+      .put("/api/admin/patients/3/info")
       .build()
       .send({
         CF: "MRRLCA87ALEH124H",
@@ -65,7 +65,7 @@ describe("admin (patient-info)", () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await authRequest(app)
       .loginAsDoctor(1)
-      .put("/api/admin/patient/3/info")
+      .put("/api/admin/patients/3/info")
       .build()
       .send({
         CF: "    MRRLCA87ALEH124H \n",

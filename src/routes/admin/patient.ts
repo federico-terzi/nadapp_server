@@ -57,29 +57,6 @@ router.put(
   }
 );
 
-router.post(
-  '/doctor/add',
-  async (req, res, next) => {
-    try {
-      // TODO: add authorized doctor endpoint
-      /*
-      const patientId = res.locals.patientId as number;
-      const authorizedDoctors = await Patient.relatedQuery<Doctor>("doctors").for(patientId)
-      const jsonDoctors = authorizedDoctors.map(doctor => doctor.getShortInfo())
-
-      // TODO: only the admin should see the authorized doctors?
-      // TODO: test unauthorized
-
-      res.json({
-        doctors: jsonDoctors,
-      })
-      */
-    } catch (err) {
-      next(err)
-    }
-  }
-)
-
 // TODO: if only the admin can upload reports, move the endpoint here (and update the tests)
 
 export default router

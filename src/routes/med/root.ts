@@ -54,6 +54,42 @@ router.get(
   }
 );
 
-router.use("/patient/:id", patientRoutes);
+router.use("/patients/:id", patientRoutes);
+
+router.get(
+  '/search',
+  async (req, res, next) => {
+    try {
+      const query = req.query.q
+      if (!query) {
+        throw new HttpError("missing query parameter", 400)
+      }
+
+      const doctor = res.locals.doctor as Doctor
+
+      let patientsPromise
+      let jsonDoctors = undefined
+      if (doctor.isAdmin()) {
+        patientsPromise = Patient.query().select()
+
+        // Only the admin can see other doctors
+        const doctors = await Doctor.query().whereRaw("LOWER(\"doctors\".\"firstName\" || ' ' || \"doctors\".\"lastName\") LIKE ?", [`%${query}%`]).orderBy("lastName", "asc")
+        jsonDoctors = doctors.map(doctor => doctor.getNameInfo())
+      } else {
+        patientsPromise = doctor.$relatedQuery<Patient>("patients")
+      }
+      // This is not SQL injection vulnerable. See: https://github.com/knex/documentation/issues/73#issuecomment-572482153
+      let patients = await patientsPromise.whereRaw("LOWER(\"patients\".\"firstName\" || ' ' || \"patients\".\"lastName\") LIKE ?", [`%${query}%`]).orderBy("lastName", "asc")
+      const jsonPatients = patients.map(patient => patient.getNameInfo())
+      
+      res.json({
+        patients: jsonPatients,
+        doctors: jsonDoctors,
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
 
 export default router

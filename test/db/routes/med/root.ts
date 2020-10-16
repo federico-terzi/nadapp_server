@@ -1,26 +1,25 @@
-import app from "../../../../index"
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import jwt from "jsonwebtoken"
-import config from "config"
-import { authRequest, RequestMethods } from "../../../testUtils";
+import app from "../../../../index";
 import Patient from "../../../../src/model/patient";
+import { authRequest, RequestMethods } from "../../../testUtils";
 
 chai.use(chaiHttp)
 
 describe("/med permission check", () => {
   const patientEndpoints = [
-    "/api/med/patient/1/info",
-    "/api/med/patient/1/doctors",
-    "/api/med/patient/1/meals",
-    "/api/med/patient/1/balances",
-    "/api/med/patient/1/reports",
-    "/api/med/patient/1/report/1/download",
-    "/api/med/patient/1/report/upload"
+    "/api/med/patients/1/info",
+    "/api/med/patients/1/doctors",
+    "/api/med/patients/1/meals",
+    "/api/med/patients/1/balances",
+    "/api/med/patients/1/reports",
+    "/api/med/patients/1/report/1/download",
+    "/api/med/patients/1/report/upload"
   ]
 
   const allMedEndpoints = [
     "/api/med/patients",
+    "/api/med/search",
     ...patientEndpoints
   ]
 
