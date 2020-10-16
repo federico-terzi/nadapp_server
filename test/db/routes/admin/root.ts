@@ -9,7 +9,10 @@ chai.use(chaiHttp)
 describe("/admin permission check", () => {
   const endpoints = [
     "/api/admin/patients",
+    "/api/admin/patients/1/authorization/2",
     "/api/admin/doctors",
+    "/api/admin/doctors/1/info",
+    "/api/admin/doctors/1/patients",
   ]
 
   it("not-logged in user cannot access admin endpoints", async () => {

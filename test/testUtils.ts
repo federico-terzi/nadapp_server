@@ -67,6 +67,12 @@ class RequestBuilder {
     return this
   }
 
+  delete(endpoint: string): this {
+    this.endpoint = endpoint
+    this.method = "delete"
+    return this
+  }
+
   build(): request.SuperAgentRequest {
     const agent = chai.request(this.server)
 

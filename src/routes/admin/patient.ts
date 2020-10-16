@@ -22,6 +22,13 @@ router.use(async (req, res, next) => {
       throw new HttpError("missing patient authorization", 403)
     }
 
+    // Make sure the patient exists
+    const result = await Patient.knex().raw("select exists(select 1 from patients where id=?)", [patientId])
+    const exists = result.rows[0]["exists"];
+    if (!exists) {
+      throw new HttpError("patient not found", 404)
+    }
+
     res.locals.patientId = patientId
 
     next()
@@ -51,6 +58,58 @@ router.put(
       } else {
         throw new HttpError(`malformed patient info: ${JSON.stringify(editPatientValidator.errors)}`, 400)
       }
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
+router.post(
+  '/authorization/:doctorId',
+  async (req, res, next) => {
+    try {
+      const patientId = res.locals.patientId as number;
+      const doctorId = parseInt(req.params.doctorId)
+      if (isNaN(doctorId)) {
+        throw new HttpError("invalid doctor id format", 400)
+      }
+
+      const doctor = await Doctor.query().findById(doctorId)
+      if (!doctor) {
+        throw new HttpError("authorized doctor not found", 404)
+      }
+
+      await Doctor.knex().raw("INSERT INTO authorized_doctors (\"doctorId\", \"patientId\") VALUES (?, ?) ON CONFLICT DO NOTHING", [doctorId, patientId])
+
+      res.json({
+        result: "ok"
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
+router.delete(
+  '/authorization/:doctorId',
+  async (req, res, next) => {
+    try {
+      const patientId = res.locals.patientId as number;
+      const doctorId = parseInt(req.params.doctorId)
+      if (isNaN(doctorId)) {
+        throw new HttpError("invalid doctor id format", 400)
+      }
+
+      const doctor = await Doctor.query().findById(doctorId)
+      if (!doctor) {
+        throw new HttpError("authorized doctor not found", 404)
+      }
+
+      await Doctor.knex().raw("DELETE FROM authorized_doctors WHERE \"doctorId\" = ? AND \"patientId\" = ?", [doctorId, patientId])
+
+      res.json({
+        result: "ok"
+      })
     } catch (err) {
       next(err)
     }

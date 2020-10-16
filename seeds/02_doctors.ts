@@ -43,6 +43,15 @@ export async function seed(knex: Knex): Promise<void> {
       title: "Dott.",
       role: "general",
     },
+    { 
+      id: 4,
+      username: "rita.callegari",
+      hash: "TOBEDEFINED",
+      firstName: "Rita",
+      lastName: "Callegari",
+      title: "Dott.sa",
+      role: "general",
+    },
   ]);
   await knex("authorized_doctors").insert([
     { 

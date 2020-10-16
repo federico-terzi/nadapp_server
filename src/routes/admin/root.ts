@@ -3,6 +3,7 @@ import { HttpError } from "../../../errors"
 import { LoginDoctorInfo } from "../../model/apiTypes"
 import Doctor from "../../model/doctor"
 import patientRoutes from "./patient"
+import doctorRoutes from "./doctor"
 
 const router = Router()
 
@@ -49,6 +50,8 @@ router.get(
     }
   }
 );
+
+router.use("/doctors/:id", doctorRoutes);
 
 router.post(
   '/patients',

@@ -32,6 +32,13 @@ router.use(async (req, res, next) => {
       throw new HttpError("missing patient authorization", 403)
     }
 
+    // Make sure the patient exists
+    const result = await Patient.knex().raw("select exists(select 1 from patients where id=?)", [patientId])
+    const exists = result.rows[0]["exists"];
+    if (!exists) {
+      throw new HttpError("patient not found", 404)
+    }
+
     res.locals.patientId = patientId
 
     next()

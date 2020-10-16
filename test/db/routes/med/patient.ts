@@ -64,6 +64,18 @@ describe("med (patient-info)", () => {
       error: "missing patient authorization",
     })
   })
+
+  it("non-existent patient id should not crash as admin", async () => {
+    const res = await authRequest(app)
+      .loginAsDoctor(1)
+      .get("/api/med/patients/9999/info")
+      .build()
+      .send()
+    expect(res).to.have.status(404)
+    expect(res.body).to.be.deep.eq({
+      error: "patient not found",
+    })
+  })
 })
 
 describe("med (patient-doctors)", () => {
