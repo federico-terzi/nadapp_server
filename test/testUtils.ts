@@ -5,10 +5,13 @@ import chai from "chai";
 
 export const authRequest = (server: any) => new RequestBuilder(server)
 
+export type RequestMethod = "get" | "post" | "put" | "delete"
+export const RequestMethods: RequestMethod[] = ["get", "post", "put", "delete"]
+
 class RequestBuilder {
   private server: any
   private headers: Record<string, string>
-  private method: "post" | "get" | null = null
+  private method: RequestMethod | null = null
   private endpoint: string | null = null
 
   constructor(server: any) {
@@ -40,6 +43,12 @@ class RequestBuilder {
     return this
   }
 
+  request(method: RequestMethod, endpoint: string): this {
+    this.endpoint = endpoint
+    this.method = method
+    return this
+  }
+
   post(endpoint: string): this {
     this.endpoint = endpoint
     this.method = "post"
@@ -49,6 +58,12 @@ class RequestBuilder {
   get(endpoint: string): this {
     this.endpoint = endpoint
     this.method = "get"
+    return this
+  }
+  
+  put(endpoint: string): this {
+    this.endpoint = endpoint
+    this.method = "put"
     return this
   }
 
@@ -68,6 +83,10 @@ class RequestBuilder {
       request = agent.post(this.endpoint)
     } else if (this.method === "get") {
       request = agent.get(this.endpoint)
+    } else if (this.method === "put") {
+      request = agent.put(this.endpoint)
+    } else if (this.method === "delete") {
+      request = agent.delete(this.endpoint)
     }
 
     if (request == null) {
@@ -82,4 +101,15 @@ class RequestBuilder {
 
 export const renderJson = (object: any): any => {
   return JSON.parse(JSON.stringify(object))
+}
+
+export const binaryParser = (res: any, callback: any) => {
+  res.setEncoding("binary")
+  res.data = ""
+  res.on("data", function (chunk: string) {
+    res.data += chunk;
+  })
+  res.on("end", function () {
+    callback(null, Buffer.from(res.data, "binary"));
+  });
 }

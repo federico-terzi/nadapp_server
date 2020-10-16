@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary()
     table.integer("patientId").unsigned()
          .references("id").inTable("patients").onDelete("CASCADE").index()
-    table.date("date").notNullable()
+    table.timestamp("date").notNullable()
     table.string("location").notNullable()
     table.string("iv").notNullable()
     table.string("key").notNullable()

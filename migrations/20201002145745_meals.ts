@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("uuid").notNullable()
     table.integer("patientId").unsigned()
          .references("id").inTable("patients").onDelete("CASCADE").index()
-    table.dateTime("date").notNullable()
+    table.timestamp("date").notNullable()
     table.text("meal").notNullable()
 
     table.unique(["uuid", "patientId"])

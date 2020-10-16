@@ -1,20 +1,20 @@
-import app from "../../../../index"
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import { authRequest, binaryParser, renderJson } from "../../../testUtils";
-import Patient from "../../../../src/model/patient";
-import Doctor from "../../../../src/model/doctor";
-import Report from "../../../../src/model/report";
-import Meal from "../../../../src/model/meal";
+import config from "config";
+import fs from "fs";
+import path from "path";
+import app from "../../../../index";
 import Balance from "../../../../src/model/balance";
-import fs from "fs"
-import config from "config"
-import path from "path"
+import Doctor from "../../../../src/model/doctor";
+import Meal from "../../../../src/model/meal";
+import Patient from "../../../../src/model/patient";
+import Report from "../../../../src/model/report";
 import { decryptData } from "../../../../src/util";
+import { authRequest, binaryParser, renderJson } from "../../../testUtils";
 
 chai.use(chaiHttp)
 
-describe("doctor (patient-info)", () => {
+describe("med (patient-info)", () => {
   it("authorized doctor should see patient info correctly", async () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await authRequest(app)
@@ -38,30 +38,6 @@ describe("doctor (patient-info)", () => {
     expect(res).to.have.status(200)
     expect(res.body).to.be.deep.eq({
       info: patient,
-    })
-  })
-
-  it("unauthorized doctor should not see patient info", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
-      .get("/api/med/patient/1/info")
-      .build()
-      .send()
-    expect(res).to.have.status(403)
-    expect(res.body).to.be.deep.eq({
-      error: "missing patient authorization",
-    })
-  })
-
-  it("patient should not see patient info", async () => {
-    const res = await authRequest(app)
-      .loginAsPatient(2)
-      .get("/api/med/patient/1/info")
-      .build()
-      .send()
-    expect(res).to.have.status(403)
-    expect(res.body).to.be.deep.eq({
-      error: "missing doctor information",
     })
   })
 
@@ -90,7 +66,7 @@ describe("doctor (patient-info)", () => {
   })
 })
 
-describe("doctor (patient-doctors)", () => {
+describe("med (patient-doctors)", () => {
   it("authorized doctor should see patient authorized doctors correctly", async () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const doctor = renderJson((await Doctor.query().findById(2)).getShortInfo())
@@ -107,10 +83,10 @@ describe("doctor (patient-doctors)", () => {
     })
   })
 
-  // TODO: should a general doctor (non-admin) be authorized to see the list of patient's doctors?
+  // TODO: should a general med (non-admin) be authorized to see the list of patient's doctors?
 })
 
-describe("doctor (patient-meals)", () => {
+describe("med (patient-meals)", () => {
   it("authorized doctor should see patient meals correctly", async () => {
     const meals = (await Meal.query().findByIds([3,4]).orderBy("date", "desc")).map(meal => meal.getInfo())
     expect(meals.length).to.be.eq(2)
@@ -125,21 +101,9 @@ describe("doctor (patient-meals)", () => {
       meals: jsonMeals,
     })
   })
-
-  it("unauthorized doctor should not see patient meals", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
-      .get("/api/med/patient/1/meals")  // Doctor 2 is not authorized to see patient 1
-      .build()
-      .send()
-    expect(res).to.have.status(403)
-    expect(res.body).to.be.deep.eq({
-      error: "missing patient authorization"
-    })
-  })
 })
 
-describe("doctor (patient-balances)", () => {
+describe("med (patient-balances)", () => {
   it("authorized doctor should see patient balances correctly", async () => {
     const balances = (await Balance.query().findByIds([3,5]).orderBy("date", "desc")).map(balance => balance.getInfo())
     expect(balances.length).to.be.eq(2)
@@ -154,21 +118,9 @@ describe("doctor (patient-balances)", () => {
       balances: jsonBalances,
     })
   })
-
-  it("unauthorized doctor should not see patient balances", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
-      .get("/api/med/patient/1/balances")  // Doctor 2 is not authorized to see patient 1
-      .build()
-      .send()
-    expect(res).to.have.status(403)
-    expect(res.body).to.be.deep.eq({
-      error: "missing patient authorization"
-    })
-  })
 })
 
-describe("doctor (patient-reports)", () => {
+describe("med (patient-reports)", () => {
   beforeEach(async () => {
     // Load some reports
     await authRequest(app)
@@ -191,7 +143,7 @@ describe("doctor (patient-reports)", () => {
   })
 
   it("authorized doctor should see reports", async () => {
-    const reports = renderJson((await Report.query().where("patientId", 3)).map(report => report.getInfo()))
+    const reports = renderJson((await Report.query().where("patientId", 3).orderBy("date", "desc")).map(report => report.getInfo()))
     expect(reports.length).to.be.eq(2)
     const res = await authRequest(app)
       .loginAsDoctor(2)
@@ -204,37 +156,24 @@ describe("doctor (patient-reports)", () => {
     })
   })
 
-  it("unauthorized doctor should not see reports", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2) // Can't read patient 1
-      .get("/api/med/patient/1/reports")
-      .build()
-      .send()
-    expect(res).to.have.status(403)
-    expect(res.body).to.be.deep.eq({
-      error: "missing patient authorization"
-    })
-  })
-
-  it("authorized doctor should download report", async () => {
-    const res = await authRequest(app)
+  it("authorized doctor should download report", (done) => {
+    authRequest(app)
       .loginAsDoctor(2)
       .get("/api/med/patient/3/report/2/download")
       .build()
-      .send()
-    expect(res).to.have.status(200)
-    expect(res.headers).to.have.property("content-disposition")
-    expect(res.headers["content-type"]).to.be.eq("application/pdf")
+      .buffer()
+      .parse(binaryParser)
+      .end((err, res) => {
+        if (err) done(err)
+        expect(res).to.have.status(200)
+        expect(res.headers).to.have.property("content-disposition")
+        expect(res.headers["content-type"]).to.be.eq("application/pdf")
 
-    // TODO: compare actual download
-
-    const stream = fs.createWriteStream('tmp/reportdownload.pdf');
-    res.pipe(stream);
-
-    // Make sure the resulting report content is correct
-    const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
-    const actualContent = fs.readFileSync("tmp/reportdownload.pdf")
-    expect(actualContent).to.be.eq(expectedContent)
+        // Make sure the resulting report content is correct
+        const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
+        expect(res.body).to.be.deep.eq(expectedContent)
+        done()
+      })
   })
 
   it("report mismatch with patient", async () => {
@@ -291,9 +230,37 @@ describe("doctor (patient-reports)", () => {
     expect(decrypted).to.be.deep.eq(reportFileContent)
   })
 
-  // TODO: test downloaded report is equal to the original file
+  it("upload without file should fail", async () => {
+    const res = await authRequest(app)
+      .loginAsDoctor(1)
+      .post("/api/med/patient/3/report/upload")
+      .build()
+      .send()
+    expect(res).to.have.status(400)
+    expect(res.body).to.be.deep.eq({
+      error: "missing file"
+    })
+  })
 
-  // TODO: test upload record without attaching file
+  it("unauthorized doctor should not upload reports", async () => {
+    const reports = await Report.query().where("patientId", 1)
+    expect(reports.length).to.be.eq(1)
+
+    const res = await authRequest(app)
+      .loginAsDoctor(2)
+      .post("/api/med/patient/1/report/upload")
+      .build()
+      .attach("file", "test/resources/testreport.pdf")
+    expect(res).to.have.status(403)
+    expect(res.body).to.be.deep.eq({
+      error: "missing patient authorization"
+    })
+
+    // Make sure no reports are added
+    const newReports = await Report.query().where("patientId", 1)
+    expect(newReports.length).to.be.eq(reports.length)
+  })
+
   // TODO: non admin doctors should not upload reports?
 
   // TODO: test not logged in doctor

@@ -1,7 +1,7 @@
 import { Router } from "express"
 import mobileRoutes from "./mobile"
 import medRoutes from "./med/root";
-import adminRoutes from "./admin";
+import adminRoutes from "./admin/root";
 
 const router = Router()
 

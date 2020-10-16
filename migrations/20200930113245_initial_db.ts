@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("telephone").notNullable()
     table.string("firstName").notNullable()
     table.string("lastName").notNullable()
-    table.date("birthDate").notNullable()
+    table.timestamp("birthDate").notNullable()
     table.string("email")
     table.string("CF").unique().notNullable()
     table.string("address")
