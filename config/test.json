@@ -17,6 +17,15 @@
     },
     "debug": false
   },
+  "RedisConfig": {
+    "host": "localhost",
+    "port": 6379
+  },
+  "SPIDConfig": {
+    "privateCertPath": "./spid/testcert/key.pem",
+    "publicCertPath": "./spid/testcert/cert.pem",
+    "idpMetadataUrl": "http://localhost:8088/metadata"
+  },
   "JWTSecret": "TEST_SECRET",
   "uploadDestinationDir": "tmp"
 }

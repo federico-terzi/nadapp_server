@@ -1,0 +1,152 @@
+{
+    "ione59": {
+        "attrs": {
+            "dateOfBirth": "1999-03-10",
+            "name": "Battista",
+            "companyName": "Fiore-Benedetti SPA",
+            "gender": "M",
+            "email": "noemirinaldi@fontana.it",
+            "fiscalNumber": "TINIT-WZJPWH98L64Q845V",
+            "registeredOffice": "Contrada Rossi 690 Appartamento 40\nHector sardo, 36374 Udine (AT)",
+            "familyName": "Barbieri",
+            "spidCode": "TENVzp7OK1R1Ad"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "bibiana49": {
+        "attrs": {
+            "dateOfBirth": "2009-12-30",
+            "name": "Elda",
+            "companyName": "Testa-Valentini s.r.l.",
+            "gender": "M",
+            "email": "paganomarieva@virgilio.it",
+            "fiscalNumber": "TINIT-SGRGON04B12B994C",
+            "registeredOffice": "Vicolo Ricci 380\nSesto Cesidia lido, 85865 Olbia-Tempio (BG)",
+            "familyName": "Rizzo",
+            "spidCode": "TENVBCdoCPpBoM"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "albertogallo": {
+        "attrs": {
+            "dateOfBirth": "1971-06-09",
+            "name": "Maggiore",
+            "companyName": "Montanari, Barbieri e Esposito e figli",
+            "gender": "F",
+            "email": "vitalimiriana@silvestri.com",
+            "fiscalNumber": "TINIT-ZWWJDX46X06E658Y",
+            "registeredOffice": "Incrocio Renzo 25\nGiuliani a mare, 22014 Verbano-Cusio-Ossola (VR)",
+            "familyName": "Leone",
+            "spidCode": "TENVb8enUGNOfQ"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "test": {
+        "attrs": {
+            "dateOfBirth": "1974-05-07",
+            "name": "Edvige",
+            "companyName": "Vitali-Gentile s.r.l.",
+            "gender": "M",
+            "email": "mtesta@poste.it",
+            "fiscalNumber": "TINIT-NXVFET19L41M540Q",
+            "registeredOffice": "Via Filomena 5\nQuarto Deborah, 49438 Bologna (SI)",
+            "familyName": "Ferri",
+            "spidCode": "TENVHK0PI01IKS"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "rosariavitali": {
+        "attrs": {
+            "dateOfBirth": "2015-01-27",
+            "name": "Marino",
+            "companyName": "Coppola, Palmieri e Damico e figli",
+            "gender": "M",
+            "email": "zbasile@milani.org",
+            "fiscalNumber": "TINIT-TOITYZ99M28G384W",
+            "registeredOffice": "Borgo Coppola 2 Appartamento 20\nSettimo Damiano nell'emilia, 37590 Pistoia (CI)",
+            "familyName": "Conti",
+            "spidCode": "TENV0BGGA8RZWs"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "rcarbone": {
+        "attrs": {
+            "dateOfBirth": "1977-03-13",
+            "name": "Sasha",
+            "companyName": "Romano, Santoro e Leone e figli",
+            "gender": "M",
+            "email": "de-angelisgavino@ferrara-silvestri.eu",
+            "fiscalNumber": "TINIT-CDHCYD28Z97X695A",
+            "registeredOffice": "Vicolo Tosca 84\nSan Boris, 04652 Reggio Calabria (SA)",
+            "familyName": "Fiore",
+            "spidCode": "TENVlhE7JvdOMo"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "cde-rosa": {
+        "attrs": {
+            "dateOfBirth": "1981-01-22",
+            "name": "Rodolfo",
+            "companyName": "Lombardi Group",
+            "gender": "F",
+            "email": "piccarda26@libero.it",
+            "fiscalNumber": "TINIT-QVPSEJ50X76U682C",
+            "registeredOffice": "Contrada Conti 6 Piano 7\nFabiano veneto, 14808 Cuneo (PO)",
+            "familyName": "Martini",
+            "spidCode": "TENVZ4RXc5kF9A"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "gentileosea": {
+        "attrs": {
+            "dateOfBirth": "1979-01-23",
+            "name": "Gregorio",
+            "companyName": "Rinaldi, Sala e Sanna Group",
+            "gender": "F",
+            "email": "muziobellini@martino.it",
+            "fiscalNumber": "TINIT-TNUYWT00T80R818O",
+            "registeredOffice": "Canale Carbone 0 Piano 5\nMarco del friuli, 40508 Genova (AP)",
+            "familyName": "D'amico",
+            "spidCode": "TENVFYqB7j7hCn"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "danuta63": {
+        "attrs": {
+            "dateOfBirth": "1972-01-11",
+            "name": "Audenico",
+            "companyName": "Caruso-Ferretti Group",
+            "gender": "F",
+            "email": "pgrasso@conti.com",
+            "fiscalNumber": "TINIT-CMGEDG55J61B012V",
+            "registeredOffice": "Piazza Giulio 062 Piano 7\nVilla terme, 04648 Brescia (VR)",
+            "familyName": "Rizzo",
+            "spidCode": "TENVwwQvie8YH3"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "zorlando": {
+        "attrs": {
+            "dateOfBirth": "1988-05-24",
+            "name": "Gioacchino",
+            "companyName": "Conti-Conte e figli",
+            "gender": "F",
+            "email": "anselmomorelli@vodafone.it",
+            "fiscalNumber": "TINIT-WKHQPE87D06N824J",
+            "registeredOffice": "Piazza Gavino 74 Appartamento 95\nQuarto Sue ellen sardo, 50836 Rieti (TS)",
+            "familyName": "Guerra",
+            "spidCode": "TENV7L1Kx5fa9Y"
+        },
+        "pwd": "test",
+        "sp": null
+    }
+}

@@ -110,3 +110,5 @@ dev.sqlite3
 build/
 
 tmp/
+
+.npmrc

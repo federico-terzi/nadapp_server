@@ -4,11 +4,13 @@ import { Model } from "objection"
 import * as bodyParser from "body-parser"
 import passport from "passport"
 import secureRoutes from "./src/routes/secure"
-import authRoutes from "./src/routes/auth"
+import authRoutes from "./src/routes/auth/root"
 import { configurePassport } from "./src/auth/passport"
 import { HttpError } from "./errors"
 import config from "config"
-import fileUpload from "express-fileupload";
+import fileUpload from "express-fileupload"
+import morgan from "morgan"
+import redis from "redis"
 
 const PORT = 8000;
 
@@ -31,13 +33,28 @@ knex.raw('select 1+1 as result').catch(err => {
 
 Model.knex(knex)
 
+const redisConfig = config.get("RedisConfig") as {
+  host: string,
+  port: number,
+}
+
+export const redisClient = redis.createClient({
+  host: redisConfig.host,
+  port: redisConfig.port,
+});
+
 const app = express()
+
+if (config.util.getEnv("NODE_ENV") === "development") {
+  app.use(morgan("dev"))
+}
 
 configurePassport()
 
 app.use(bodyParser.json({
   limit: "50mb",  // TODO: think about reasonable limit
 }))
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload({
   abortOnLimit: true,
   limits: { fileSize: 50 * 1024 * 1024 },
@@ -47,7 +64,7 @@ app.use(passport.initialize())
 
 app.use('/api', passport.authenticate('jwt', { session: false }), secureRoutes)
 app.use('/auth', authRoutes)
-app.get('/', (req, res) => res.send('Express + TypeScript Server'))
+app.get('/', (req, res) => res.send('NAD-APP Server'))
 
 // Handle errors.
 app.use((err: any, req: any, res: any, next: NextFunction) => {

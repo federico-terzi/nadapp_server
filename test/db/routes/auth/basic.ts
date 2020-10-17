@@ -1,4 +1,4 @@
-import app from "../../../index"
+import app from "../../../../index"
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken"
@@ -9,7 +9,7 @@ chai.use(chaiHttp)
 describe("login", () => {
   it("login patient correct", (done) => {
     chai.request(app)
-      .post("/auth/login")
+      .post("/auth/basic/login")
       .set("content-type", "application/json")
       .send({
         username: "patient@mario.rossi",
@@ -30,7 +30,7 @@ describe("login", () => {
 
   it("login doctor correct", (done) => {
     chai.request(app)
-      .post("/auth/login")
+      .post("/auth/basic/login")
       .set("content-type", "application/json")
       .send({
         username: "med@carlo.alberti",
@@ -51,7 +51,7 @@ describe("login", () => {
 
   it("login without credentials is incorrect", (done) => {
     chai.request(app)
-      .post("/auth/login")
+      .post("/auth/basic/login")
       .end((err, res) => {
         if (err) done(err)
         expect(res).to.have.status(400)
@@ -64,7 +64,7 @@ describe("login", () => {
 
   it("login with invalid category", (done) => {
     chai.request(app)
-      .post("/auth/login")
+      .post("/auth/basic/login")
       .set("content-type", "application/json")
       .send({
         username: "jerry",
@@ -82,7 +82,7 @@ describe("login", () => {
 
   it("login with bad username format", (done) => {
     chai.request(app)
-      .post("/auth/login")
+      .post("/auth/basic/login")
       .set("content-type", "application/json")
       .send({
         username: "med@",
