@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import app from "../../../../index";
+import { app } from "../../init";
 import Doctor from "../../../../src/model/doctor";
 import Patient from "../../../../src/model/patient";
 import { authRequest } from "../../../testUtils";

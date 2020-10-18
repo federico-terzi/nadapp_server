@@ -112,3 +112,7 @@ build/
 tmp/
 
 .npmrc
+
+.yarnrc.yml
+.yarn
+.pnp.js

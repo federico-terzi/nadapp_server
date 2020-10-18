@@ -3,7 +3,7 @@ import chaiHttp from "chai-http";
 import config from "config";
 import fs from "fs";
 import path from "path";
-import app from "../../../../index";
+import { app } from "../../init";
 import Balance from "../../../../src/model/balance";
 import Doctor from "../../../../src/model/doctor";
 import Meal from "../../../../src/model/meal";

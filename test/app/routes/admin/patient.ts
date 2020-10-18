@@ -1,6 +1,6 @@
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import app from "../../../../index";
+import { app } from "../../init";
 import Doctor from "../../../../src/model/doctor";
 import Patient from "../../../../src/model/patient";
 import { authRequest, renderJson } from "../../../testUtils";

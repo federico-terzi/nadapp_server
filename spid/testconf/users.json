@@ -74,6 +74,33 @@
         "pwd": "test",
         "sp": null
     },
+    "mariorossi": {
+        "attrs": {
+            "dateOfBirth": "1973-04-02",
+            "name": "Mario",
+            "gender": "M",
+            "email": "mariorossi@gmail.com",
+            "fiscalNumber": "TINIT-RSSFLV95C12H11UZ",
+            "registeredOffice": "Borgo Coppola 2 Appartamento 20\nSettimo Damiano nell'emilia, 37590 Pistoia (CI)",
+            "familyName": "Rossi",
+            "spidCode": "TENV0BGGA9RZWs"
+        },
+        "pwd": "test",
+        "sp": null
+    },
+    "francogialli": {
+        "attrs": {
+            "name": "Franco",
+            "gender": "M",
+            "email": "franco.gialli@gmail.com",
+            "fiscalNumber": "TINIT-GLLFRC12E342JK2ALLK",
+            "registeredOffice": "Borgo Coppola 2 Appartamento 20\nSettimo Damiano nell'emilia, 37590 Pistoia (CI)",
+            "familyName": "Gialli",
+            "spidCode": "TENV1BGGA9RZWs"
+        },
+        "pwd": "test",
+        "sp": null
+    },
     "rcarbone": {
         "attrs": {
             "dateOfBirth": "1977-03-13",

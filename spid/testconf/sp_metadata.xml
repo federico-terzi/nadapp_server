@@ -1,16 +1,11 @@
 <?xml version="1.0"?>
-<!-- Esempio di metadata Service Provider
-     Per informazioni sulla compilazione fare riferimento alle Regole Tecniche SPID -->
 
-<!-- entityID è una URI che individua univocamente il Service Provider -->
 <md:EntityDescriptor
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
     entityID="http://localhost:8000/"
     ID="_681a637-6cd4-434f-92c3-4fed720b2ad8">
 
-    <!-- Il certificato del Service Provider va riportato nei due tag KeyDescriptor
-         qui sotto, senza i delimitatori ‐‐‐ BEGIN CERTIFICATE ‐‐‐ e ‐‐‐ END CERTIFICATE ‐‐‐ -->
     <md:SPSSODescriptor
         protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
         AuthnRequestsSigned="true"
@@ -19,37 +14,55 @@
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
                 <ds:X509Data>
-                    <ds:X509Certificate>certificato Service Provider</ds:X509Certificate>
+                    <ds:X509Certificate>
+                    MIIFYDCCA0igAwIBAgIJAJT2b1ST0ee6MA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
+BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
+aWRnaXRzIFB0eSBMdGQwHhcNMjAxMDE4MTUyMzA4WhcNMjExMDE4MTUyMzA4WjBF
+MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50
+ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
+CgKCAgEAzNkjc/IzSksCPSHSI/98D8y9uaMkdkNrAQ2PheiOZ83WDuVWK+Sjph+d
+pbFb3re4U+tex+CNy7aU8TWe8XDDRB5xpPmZTAzAdHRhFjozEhtn7k9IrZZYk5gY
+mI+6rc2bBdl6TZQjrmeoBAYxX6d3AST1PZs/ghGTp9Vdu36aW9iPHV20V0MaZcYm
+NjjvCV7XBqs9wj0Y1HLzb7+eRqFnsFV3+YFSeYcZWYlhsY5DVyw5bqRxd+SfGjga
+8EMxNZ0WdUXWww9Rly89wQIr9IaxGYzzCUU7tbwR7p8zIPLtSN39otQQtsjvmczT
+geB8AFLIaQMyWMxxf/ZANnsdN2duwIpzva2h1Ou4hDIf2B3YZrj2k/sVgDnx+HNu
++B2nE/gv2XijXoMFEWi+Cz6kinuU/M6o0XFoLROB0SkZL8DEIFzi+fZ32tDKkV6h
+qC2/yBL2atL1/3WkmujrxPg5/Nc7N2mt8P7JEwvpVKXHWWMDbv6s+EcCxEp4keLn
+138uDFxbqyVkhaytPeUBWeCNh9aTBwJqxxHaUgFuNv7H8RVBZyRpyU6P0+kaoubo
+4Wh1AeypnIInTlZ2g4b045E5LBw4kg9NcuNerbsR9+xG1migDFdVBS30qhBk4L54
+uKNzpg4fghMom9hZnlDbjQeA9usWfAHz2euyUyuEUaqoA/2Cm+sCAwEAAaNTMFEw
+HQYDVR0OBBYEFMqiq0AakKNY7rMqmAH2zLeLy3gVMB8GA1UdIwQYMBaAFMqiq0Aa
+kKNY7rMqmAH2zLeLy3gVMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQAD
+ggIBAFwVU0xwNJ7Tx9TDz7lh+ftJ9ReYp83ww51F4zs1/Wz3iSZvtbXp2uvqAuUP
+BEksF3Um7eMyd125eTcol4YBioIShwhqPhFJUgjVApWeqvOh65FGav3jTBrHFqFy
+iYdQfntj2vnfVHCpdvPbPBHNrBmUsyCaymgjdWGyoEmYRNHRJsAEhBBBEPhGSeAp
+5QBnefM+njtwVggkyK9Kgu+MxQNIv8Gc/bSDVWxWP5EI0qI/xyv3HS13TPl8Brk7
+0HhS2KWOne4Mj87EdftYirjvKvb663ypKRTpmZuxQ9bblaNCsZnlVFmlOZluYTyk
+ZdM7cUyhskX/dl7qd87eoJBK/v5+O87ocHw4nEIWVO1OCsf/Dc2vV1DbrEDIDqEG
+V+EmmD4qlq4n8yN9cojyJ/EFsS3dmwZSLPr7qHRxMmjXQaZ4MBMxeqqd/7KKOZLH
+qDH3WWO1J6zELwSk4C4jt+7kotfSi41VTsj5rv2NMHViL9lLJnjAbGD54UU9yNXQ
+28+qyca7MgRbAB9dtcVemewU5AdIBM9RZiDVTrGaO1jFMl/B0KpQzogX4h037Uh7
+9FX8c2ggrkbP7D4GzvbiQeIW7zQb/rA934IakzPz12S87IkL1JTzLK0rMqR7xAGF
+ksLwpoOCZNTLz88o15Bc/lVn49pQubOKXnyBCx7yN+mFm40Z
+                    </ds:X509Certificate>
                 </ds:X509Data>
             </ds:KeyInfo>
         </md:KeyDescriptor>
 
-        <md:KeyDescriptor use="encryption">
-            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-                <ds:X509Data>
-                    <ds:X509Certificate>certificato Service Provider</ds:X509Certificate>
-                </ds:X509Data>
-            </ds:KeyInfo>
-        </md:KeyDescriptor>
 
-        <!-- Endpoint del Service Provider deputato a ricevere le LogoutRequest -->
         <md:SingleLogoutService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
             Location="https://localhost:8000/spid/logout" />
 
         <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
 
-        <!-- Endpoint del Service Provider deputato a ricevere le asserzioni di login.
-             (può essere ripetuto più volte, incrementando l'attributo index) -->
         <md:AssertionConsumerService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
             Location="http://localhost:8000/spid/acs"
             index="0"
             isDefault="true" />
 
-        <!-- Gruppo di attributi predefinito, che il Service Provider potrà richiedere
-             durante in login. Si può specificare più volte. Si raccomanda di limitare
-             gli attributi richiesti ai soli necessari per l'erogazione del proprio servizio. -->
+
         <md:AttributeConsumingService index="0">
             <md:ServiceName xml:lang="it">Login NAD-APP</md:ServiceName>
             <md:ServiceDescription xml:lang="it">Login su NAD-APP tramite SPID</md:ServiceDescription>
@@ -58,7 +71,6 @@
 
     </md:SPSSODescriptor>
 
-    <!-- Informazioni generali sul Service Provider -->
     <md:Organization>
         <md:OrganizationName xml:lang="it">NAD-APP</md:OrganizationName>
         <md:OrganizationDisplayName xml:lang="it">NAD-APP Centro IICB Ospedale Sant'Orsola Bologna</md:OrganizationDisplayName>

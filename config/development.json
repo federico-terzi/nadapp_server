@@ -4,8 +4,8 @@
     "connection": {
       "database": "postgres",
       "host": "localhost",
-      "port": "5433",
-      "user": "testpostgres",
+      "port": "5432",
+      "user": "postgres",
       "password": "postgres"
     },
     "pool": {
@@ -23,8 +23,7 @@
   },
   "SPIDConfig": {
     "privateCertPath": "./spid/testcert/key.pem",
-    "publicCertPath": "./spid/testcert/cert.pem",
-    "idpMetadataUrl": "http://localhost:8088/metadata"
+    "publicCertPath": "./spid/testcert/cert.pem"
   },
   "JWTSecret": "TEST_SECRET",
   "logErrorsToConsole": true

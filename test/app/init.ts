@@ -1,12 +1,15 @@
 import config from "config"
 import Knex from "knex"
 import { Model } from "objection"
-import app from "../.."
+import { initializeApp } from "../.."
 import fs from "fs"
 import util from "util"
 import fsExtra from "fs-extra"
+import express from "express"
 
 const mkdir = util.promisify(fs.mkdir)
+
+export let app: express.Express
 
 // This module is executed before the nested ones, making it possible
 // to run a seed+clean up step between tests, so that each test runs
@@ -38,6 +41,9 @@ before(async () => {
   if (!fs.existsSync(config.get("uploadDestinationDir"))) {
     await mkdir(config.get("uploadDestinationDir"))
   }
+
+  console.log("initializing the app server")
+  app = await initializeApp()
 })
 
 beforeEach(async () => {
