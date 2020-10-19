@@ -10,7 +10,7 @@ import { HttpError } from "./errors"
 import config from "config"
 import fileUpload from "express-fileupload"
 import morgan from "morgan"
-import redis from "redis"
+import { redisClient } from "./src/redis"
 import exphbs from "express-handlebars"
 import { configureSpid } from "./src/routes/auth/spid";
 
@@ -37,17 +37,6 @@ export const initializeApp = async (): Promise<express.Express> => {
   });
 
   Model.knex(knex)
-
-  const redisConfig = config.get("RedisConfig") as {
-    host: string,
-    port: number,
-  }
-
-  const redisClient = redis.createClient({
-    host: redisConfig.host,
-    port: redisConfig.port,
-  });
-
 
   if (config.util.getEnv("NODE_ENV") === "development") {
     app.use(morgan("dev"))

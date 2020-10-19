@@ -9,7 +9,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 1,
       username: "mario.rossi",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$BEpAnQS.5bGtjZ83Wh2xpuqZub7YKcZmK.eKSSbcOFROylaFSqhZC", // test
       firstName: "Mario",
       lastName: "Rossi",
       CF: "RSSFLV95C12H11UZ",
@@ -22,7 +22,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 2,
       username: "caterina.verdi",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$TCHPaJQVxxFD1M2YTtqOTOySwSy1K.cmR0HKZLN8L14pVOWncItxW", // password1234
       firstName: "Caterina",
       lastName: "Verdi",
       CF: "VRDCTR81C12J15KZ",
@@ -35,7 +35,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 3,
       username: "maria.lambertini",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$S1PlUKkBf5ncH0EyfYTS0ek95VFkR0wUsV3fa5tWuUzmOhvCRxRu.", // Maria.9
       firstName: "Maria",
       lastName: "Lambertini",
       CF: "LMBMRA89E174LSJD2",

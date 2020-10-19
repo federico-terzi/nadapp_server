@@ -10,7 +10,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 1,
       username: "franco.gialli",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$rbZpSyl.RxWayZjEH8JjfOY0IU361e48gi9SC6FRvwDrC5yHrvYQa", // test
       firstName: "Franco",
       lastName: "Gialli",
       CF: "GLLFRC12E342JK2ALLK",
@@ -22,7 +22,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 2,
       username: "carlo.alberti",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$BKIzbUoJURabT/5rvxAsO.3mtPOnRIMr57tkxvH822Pig1dErISiS", // password2020
       firstName: "Carlo",
       lastName: "Alberti",
       CF: "ALBCRL56LA2J13H45Z",
@@ -37,7 +37,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 3,
       username: "massimo.lorenzi",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$mp46WfkfxtwuJxwkRdmK/.cl4IUIQ070yNu5XaQD891CtxC/mkIVy", // italia
       firstName: "Massimo",
       lastName: "Lorenzi",
       title: "Dott.",
@@ -46,7 +46,7 @@ export async function seed(knex: Knex): Promise<void> {
     { 
       id: 4,
       username: "rita.callegari",
-      hash: "TOBEDEFINED",
+      hash: "$2b$11$ZzFb6NvTRQUmVNKBCSeoIu20VGh/ywNtuOHKULcE/iszOWqk9lOmq", // RitaRita
       firstName: "Rita",
       lastName: "Callegari",
       title: "Dott.sa",

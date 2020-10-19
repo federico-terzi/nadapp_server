@@ -9,15 +9,17 @@
     "start": "nodemon index.ts",
     "test": "cross-env NODE_ENV=test ts-mocha test/**/*.ts --exit",
     "testd": "cross-env NODE_ENV=test NODE_CONFIG={\\\"logErrorsToConsole\\\":true} ts-mocha test/**/*.ts --exit",
-    "migrate-down": "cross-env NODE_ENV=development ts-node knexutils/migrate.js reset",
-    "migrate-up": "cross-env NODE_ENV=development ts-node knexutils/migrate.js latest",
-    "migrate-seed": "cross-env NODE_ENV=development ts-node knexutils/migrate.js seed",
+    "migrate-down": "cross-env NODE_ENV=development ts-node scripts/knexutils/migrate.js reset",
+    "migrate-up": "cross-env NODE_ENV=development ts-node scripts/knexutils/migrate.js latest",
+    "migrate-seed": "cross-env NODE_ENV=development ts-node scripts/knexutils/migrate.js seed",
+    "hash-pw": "cross-env NODE_ENV=development ts-node scripts/hash/hash.js",
     "build": "tsc --project ./"
   },
   "dependencies": {
     "@pagopa/io-spid-commons": "^4.7.0",
     "@types/xmldom": "^0.1.30",
     "ajv": "^6.12.5",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "config": "^3.3.2",
     "express": "^4.17.1",
@@ -41,6 +43,7 @@
     "xmldom": "^0.3.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.13",
     "@types/chai-http": "^4.2.0",
     "@types/config": "^0.0.36",

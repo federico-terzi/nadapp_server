@@ -6,6 +6,7 @@ import fs from "fs"
 import util from "util"
 import fsExtra from "fs-extra"
 import express from "express"
+import { flushall } from "../../src/redis"
 
 const mkdir = util.promisify(fs.mkdir)
 
@@ -49,6 +50,9 @@ before(async () => {
 beforeEach(async () => {
   // Delete the previous data and populate the db with a fresh copy
   await knex.seed.run()
+
+  // Flush the redis data
+  await flushall()
 })
 
 after(() => {

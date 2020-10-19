@@ -3,8 +3,19 @@ import Crypto from "crypto"
 export const randomString = (length: number) => {  
   return Crypto
     .randomBytes(length)
-    .toString('hex')
+    .toString('base64')
     .slice(0, length)
+}
+
+// TODO: test
+export const randomDigitCode = (length: number): string => {
+  let buffer = ""
+  for (let i = 0; i<length; i++) {
+    let randomByte = Crypto.randomBytes(1)[0]
+    let digit = randomByte % 10
+    buffer += digit
+  }
+  return buffer
 }
 
 export const trimFields = (obj: any) => {
