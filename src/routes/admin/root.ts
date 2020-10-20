@@ -4,6 +4,11 @@ import { LoginDoctorInfo } from "../../model/apiTypes"
 import Doctor from "../../model/doctor"
 import patientRoutes from "./patient"
 import doctorRoutes from "./doctor"
+import { trimFields } from "../../util"
+import { addPatientValidator } from "../../schema/patient"
+import Patient from "../../model/patient"
+
+const MAX_USERNAME_NUMBER_ATTEMPTS = 10
 
 const router = Router()
 
@@ -57,45 +62,53 @@ router.post(
   '/patients',
   async (req, res, next) => {
     try {
-      const doctor = res.locals.doctor as Doctor
-
-      // TODO: add patient endpoint
-      /*
       trimFields(req.body) // TODO: check field trimming
 
-    if (addPatientValidator(req.body)) {
-      // Generate a new username
-      const firstName = req.body.firstName.replace(/\W/g, '').toLowerCase()
-      const lastName = req.body.lastName.replace(/\W/g, '').toLowerCase()
-      const username = `${firstName}.${lastName}`
+      if (addPatientValidator(req.body)) {
+        // Generate a new username
+        const cleanFirstName = req.body.firstName.replace(/\W/g, '').toLowerCase()
+        const cleanLastName = req.body.lastName.replace(/\W/g, '').toLowerCase()
+ 
+        let attempt = 0
+        let username = null
+        while (attempt < MAX_USERNAME_NUMBER_ATTEMPTS) {
+          username = attempt > 0 ? 
+            `${cleanFirstName}.${cleanLastName}-${attempt}` : 
+            `${cleanFirstName}.${cleanLastName}`
 
-      // TODO: test correct handling when two users have the same name
+          // Check if the username is available
+          const patient = await Patient.query().where("username", username)
+          if (!patient) {
+            break
+          }
 
-      // TODO: test CF duplicates
+          attempt++
+        }
 
-      // TODO: generate the password here
+        if (attempt == MAX_USERNAME_NUMBER_ATTEMPTS) {
+          console.error("too many users with the same name")
+          throw new HttpError("name conflict", 500)
+        }
 
-      try {
-        await Patient.query().insert({
+        // TODO: test correct handling when two users have the same name
+        // TODO: test CF duplicates
+
+        // Initially the password is not assigned, but it has to be provided using the
+        // credentials recovery procedure.
+
+        const patient = await Patient.query().insertAndFetch({
           ...req.body,
           username: username,
           lastServerEdit: Date.now(),
-          hash: "", // TODO: change
+          hash: "not yet assigned",
         })
 
-        // TODO: check if another user has the same username
-
-        res.json({ message: "Ok" })
-      } catch (err) {
-        next(err)
+        res.json({
+          patient: patient.getInfo()
+        })
+      } else {
+        throw new HttpError("bad patient format: " + JSON.stringify(addPatientValidator.errors), 400)
       }
-    } else {
-      res.status(400).json({ message: addPatientValidator.errors })
-    }
-      res.json({
-        patients: jsonPatients,
-      })
-      */
     } catch (err) {
       next(err)
     }

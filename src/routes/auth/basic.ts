@@ -42,18 +42,19 @@ router.post(
         throw new HttpError("bad username format", 400)
       }
 
-      const username: string = tokens[1]
+      let username: string = tokens[1]
       if (!username || username.trim().length == 0) {
         throw new HttpError("bad username content", 400)
       }
+      username = username.trim()
 
       let user: Patient | Doctor | null = null
 
       if (isPatient) {
-        user = await Patient.query().select().where("username", "=", username).first()
+        user = await Patient.query().select().whereRaw("LOWER(username) = ?", [username.toLowerCase()]).first()
       }
       if (isMed) {
-        user = await Doctor.query().select().where("username", "=", username).first()
+        user = await Doctor.query().select().whereRaw("LOWER(username) = ?", [username.toLowerCase()]).first()
       }
 
       if (!user) {
@@ -125,13 +126,13 @@ router.post(
         throw new HttpError("invalid token", 401)
       }
 
+      // Delete used key from store
+      await del(redisKey)
+
       const redisPayload = JSON.parse(redisPayloadJSON) as RedisVerificationPayload
       if (code !== redisPayload.code) {
         throw new HttpError("invalid code", 401)
       }
-
-      // Delete used key from store
-      await del(redisKey)
       
       // Generate the JWT token
       const token = jwt.sign({ user: redisPayload.user }, config.get("JWTSecret"))

@@ -75,6 +75,19 @@ describe("login", () => {
     })
   })
 
+  it("login patient username case insensitive", async () => {
+    const res = await chai.request(app)
+      .post("/auth/basic/login")
+      .set("content-type", "application/json")
+      .send({
+        username: "patient@Mario.rossi",
+        password: "test"
+      })
+
+    expect(res).to.have.status(200)
+    expect(res.body).to.have.property("verify")
+  })
+
   it("login without credentials is incorrect", (done) => {
     chai.request(app)
       .post("/auth/basic/login")

@@ -13,7 +13,7 @@ export const syncValidator = new Ajv().compile({
         properties: {
           uuid: { type: "string", minLength: 1, maxLength: 50 },
           meal: { type: "string", minLength: 1, maxLength: 1024 },
-          date: { type: "string", format: "date-time" }
+          date: { type: "string" }
         }
       }
     },
@@ -23,7 +23,7 @@ export const syncValidator = new Ajv().compile({
         required: ["uuid", "date"],
         properties: {
           uuid: { type: "string", minLength: 1, maxLength: 50 },
-          date: { type: "string", format: "date-time" },
+          date: { type: "string" },
           minPressure: { type: "integer" },
           maxPressure: { type: "integer" },
           heartFrequency: { type: "integer" },
