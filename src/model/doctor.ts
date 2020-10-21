@@ -90,4 +90,10 @@ export default class Doctor extends Model {
       address: this.address,
     }
   }
+
+  getSyncInfo() {
+    return {
+      name: `${this.title} ${this.firstName} ${this.lastName}`.trim(),
+    }
+  }
 }

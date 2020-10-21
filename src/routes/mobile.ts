@@ -3,8 +3,10 @@ import { MAX_BALANCES_PER_SYNC, MAX_MEALS_PER_SYNC } from "../..";
 import { HttpError } from "../../errors";
 import { LoginPatientInfo } from "../model/apiTypes";
 import Balance from "../model/balance";
+import Doctor from "../model/doctor";
 import Meal from "../model/meal";
 import Patient from "../model/patient";
+import Report from "../model/report";
 import { syncValidator } from "../schema/sync";
 
 const router = Router()
@@ -128,13 +130,19 @@ router.post(
           .limit(MAX_BALANCES_PER_SYNC).orderBy("date", "desc");
         const jsonBalances = balances.map(balance => balance.getInfo())
 
-        // TODO: add doctors
+        const authorizedDoctors = await patient.$relatedQuery<Doctor>("doctors")
+        const jsonDoctors = authorizedDoctors.map(doctor => doctor.getSyncInfo())
+
+        const reports = await patient.$relatedQuery<Report>("reports")
+        const jsonReports = reports.map(report => report.getInfo())
+
         res.json({
           inSync: false,
           lastServerEdit: patient.getLastServerEditTimestamp(),
-          firstName: patient.firstName,
           meals: jsonMeals,
           balances: jsonBalances,
+          doctors: jsonDoctors,
+          reports: jsonReports,
         })
       } else {
         res.json({

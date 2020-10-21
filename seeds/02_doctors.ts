@@ -62,6 +62,10 @@ export async function seed(knex: Knex): Promise<void> {
       doctorId: 2,
       patientId: 3,
     },
+    { 
+      doctorId: 4,
+      patientId: 1,
+    },
   ])
 
   // Update the increments counter to avoid this problem: https://github.com/knex/knex/issues/1855

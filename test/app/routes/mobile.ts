@@ -5,6 +5,7 @@ import { authRequest, renderJson } from "../../testUtils";
 import Patient from "../../../src/model/patient";
 import Meal from "../../../src/model/meal";
 import Balance from "../../../src/model/balance";
+import Doctor from "../../../src/model/doctor";
 
 chai.use(chaiHttp)
 
@@ -57,6 +58,7 @@ describe("mobile", () => {
     const patient = await Patient.query().findById(1)
     const meals = (await Meal.query().findByIds([1,2]).orderBy("date", "desc")).map(meal => meal.getInfo())
     const balances = (await Balance.query().findByIds([1,2,4]).orderBy("date", "desc")).map(balance => balance.getInfo())
+    const doctors = (await Doctor.query().findByIds([4])).map(doctor => doctor.getSyncInfo())
     const res = await authRequest(app)
       .loginAsPatient(1)
       .post("/api/mobile/sync")
@@ -67,10 +69,11 @@ describe("mobile", () => {
     expect(res).to.have.status(200)
     expect(res.body).to.be.deep.eq({
       inSync: false,
-      firstName: "Mario",
       lastServerEdit: patient.getLastServerEditTimestamp(),
       meals: renderJson(meals),
-      balances: renderJson(balances)
+      balances: renderJson(balances),
+      doctors: renderJson(doctors),
+      reports: [],
     })
   })
 

@@ -26,5 +26,6 @@
     "publicCertPath": "./spid/testcert/cert.pem"
   },
   "JWTSecret": "TEST_SECRET",
-  "logErrorsToConsole": true
+  "logErrorsToConsole": true,
+  "uploadDestinationDir": "tmp"
 }
