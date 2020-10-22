@@ -1,11 +1,13 @@
 import { app } from "../init";
 import chai, { expect } from "chai";
 import chaiHttp from "chai-http";
-import { authRequest, renderJson } from "../../testUtils";
+import { authRequest, binaryParser, renderJson } from "../../testUtils";
 import Patient from "../../../src/model/patient";
 import Meal from "../../../src/model/meal";
 import Balance from "../../../src/model/balance";
 import Doctor from "../../../src/model/doctor";
+import Report from "../../../src/model/report";
+import fs from "fs"
 
 chai.use(chaiHttp)
 
@@ -299,6 +301,73 @@ describe("mobile", () => {
       minPressure: 64,
       maxPressure: 115,
       heartFrequency: 65,
+    })
+  })
+})
+
+describe("mobile (reports)", () => {
+  beforeEach(async () => {
+    // Load some reports
+    await authRequest(app)
+      .loginAsDoctor(1)
+      .post("/api/med/patients/1/reports/upload")
+      .build()
+      .attach("file", "test/resources/testreport.pdf")
+
+    await authRequest(app)
+      .loginAsDoctor(1)
+      .post("/api/med/patients/3/reports/upload")
+      .build()
+      .attach("file", "test/resources/testreport.pdf")
+
+    await authRequest(app)
+      .loginAsDoctor(1)
+      .post("/api/med/patients/3/reports/upload")
+      .build()
+      .attach("file", "test/resources/testreport.pdf")
+  })
+
+  it("authorized patient should download report", (done) => {
+    authRequest(app)
+      .loginAsPatient(3)
+      .get("/api/mobile/reports/3/download")
+      .build()
+      .buffer()
+      .parse(binaryParser)
+      .end((err, res) => {
+        if (err) done(err)
+        expect(res).to.have.status(200)
+        expect(res.headers).to.have.property("content-disposition")
+        expect(res.headers["content-type"]).to.be.eq("application/pdf")
+
+        // Make sure the resulting report content is correct
+        const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
+        expect(res.body).to.be.deep.eq(expectedContent)
+        done()
+      })
+  })
+
+  it("patient cannot read a report that doesn't belong to him", async () => {
+    const res = await authRequest(app)
+      .loginAsPatient(3)
+      .get("/api/mobile/reports/1/download")  // Report 1 does not belong to patient 3
+      .build()
+      .send()
+    expect(res).to.have.status(403)
+    expect(res.body).to.be.deep.eq({
+      error: "patient mismatch",
+    })
+  })
+
+  it("non-existing report", async () => {
+    const res = await authRequest(app)
+      .loginAsPatient(3)
+      .get("/api/mobile/reports/9999/download")
+      .build()
+      .send()
+    expect(res).to.have.status(404)
+    expect(res.body).to.be.deep.eq({
+      error: "report not found",
     })
   })
 })

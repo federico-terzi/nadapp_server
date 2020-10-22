@@ -8,6 +8,7 @@ import Meal from "../model/meal";
 import Patient from "../model/patient";
 import Report from "../model/report";
 import { syncValidator } from "../schema/sync";
+import { downloadReportResponse } from "./reports";
 
 const router = Router()
 
@@ -155,5 +156,23 @@ router.post(
     }
   }
 );
+
+router.get(
+  '/reports/:reportId/download',
+  async (req, res, next) => {
+    try {
+      const patient = res.locals.patient as Patient;
+      const reportId = parseInt(req.params.reportId);
+      if (isNaN(reportId)) {
+        throw new HttpError("bad report id format", 400)
+      }
+
+      await downloadReportResponse(reportId, patient.id, res);
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
 
 export default router

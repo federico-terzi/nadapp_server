@@ -11,6 +11,7 @@ import config from "config"
 import { decryptData, encryptData, generateKeyIV } from "../../util";
 import util from "util"
 import fs, { read } from "fs"
+import { downloadReportResponse } from "../reports";
 
 const writeFile = util.promisify(fs.writeFile)
 const readFile = util.promisify(fs.readFile)
@@ -145,29 +146,7 @@ router.get(
         throw new HttpError("bad report id format", 400)
       }
 
-      const report: Report | undefined = await Report.query().findById(reportId)
-      if (!report) {
-        throw new HttpError("report not found", 404)
-      }
-
-      // Make sure the report id belongs to the user
-      if (report.patientId !== patientId) {
-        throw new HttpError("patient mismatch", 403)
-      }
-
-      // Load the report file contents
-      const reportPath = join(config.get("uploadDestinationDir"), report.location)
-      const encryptedReportContent = await readFile(reportPath)
-      
-      // Decrypt the file contents
-      const [iv, key] = report.getIVKey()
-      const decryptedData = decryptData(iv, key, encryptedReportContent)
-
-      const downloadFilename = `${patientId}_${report.date.getTime()}.pdf`
-
-      res.setHeader('Content-disposition', `attachment; filename=${downloadFilename}`);
-      res.setHeader('Content-type', "application/pdf");
-      res.end(decryptedData)
+      await downloadReportResponse(reportId, patientId, res);
     } catch (err) {
       next(err)
     }
