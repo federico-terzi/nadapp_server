@@ -35,11 +35,9 @@ describe("login", () => {
         code: code,
       })
 
-    const decoded: any = jwt.verify(verifyRes.body.token, config.get("JWTSecret"))
-    expect(decoded).to.have.property("user")
-    expect(decoded.user).to.deep.eq({
-      patientId: 1
-    })
+    // Make sure there is the correct cookie
+    expect(verifyRes.status).to.eq(200)
+    expect(verifyRes).to.have.cookie("connect.sid")
   })
 
   it("login doctor correct", async () => {
@@ -68,11 +66,9 @@ describe("login", () => {
         code: code,
       })
 
-    const decoded: any = jwt.verify(verifyRes.body.token, config.get("JWTSecret"))
-    expect(decoded).to.have.property("user")
-    expect(decoded.user).to.deep.eq({
-      doctorId: 2
-    })
+    // Make sure there is the correct cookie
+    expect(verifyRes.status).to.eq(200)
+    expect(verifyRes).to.have.cookie("connect.sid")
   })
 
   it("login patient username case insensitive", async () => {
@@ -235,11 +231,9 @@ describe("login", () => {
         code: code,
       })
 
-    const decoded: any = jwt.verify(verifyRes.body.token, config.get("JWTSecret"))
-    expect(decoded).to.have.property("user")
-    expect(decoded.user).to.deep.eq({
-      patientId: 1
-    })
+    // Make sure there is the correct cookie
+    expect(verifyRes.status).to.eq(200)
+    expect(verifyRes).to.have.cookie("connect.sid")
 
     // Send the second verification request
     const verifyRes2 = await chai.request(app)

@@ -31,8 +31,8 @@ describe("/admin permission check", () => {
   it("non-admin doctor cannot access admin endpoints", async () => {
     for (let endpoint of endpoints) {
       for (let method of RequestMethods) {
-        const res = await authRequest(app)
-          .loginAsDoctor(2)  // Doctor 2 is not an admin
+        const res = await (await authRequest(app)
+          .loginAsDoctor(2))  // Doctor 2 is not an admin
           .request(method, endpoint)
           .build()
           .send()
@@ -47,8 +47,8 @@ describe("/admin permission check", () => {
   it("patient cannot access admin endpoints", async () => {
     for (let endpoint of endpoints) {
       for (let method of RequestMethods) {
-        const res = await authRequest(app)
-          .loginAsPatient(1)
+        const res = await (await authRequest(app)
+          .loginAsPatient(1))
           .request(method, endpoint)
           .build()
           .send()
@@ -64,8 +64,8 @@ describe("/admin permission check", () => {
 describe("admin (doctors)", () => {
   it("admin can see all doctors correctly", async () => {
     const doctors = (await Doctor.query().orderBy("lastName", "asc")).map(doctor => doctor.getShortInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(1) // Admin
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1)) // Admin
       .get("/api/admin/doctors")
       .build()
       .send()

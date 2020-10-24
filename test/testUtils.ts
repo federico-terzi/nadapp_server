@@ -13,33 +13,27 @@ class RequestBuilder {
   private headers: Record<string, string>
   private method: RequestMethod | null = null
   private endpoint: string | null = null
+  private agent
 
   constructor(server: any) {
     this.server = server
     this.headers = {
-      "content-type": "application/json"
+      "content-type": "application/json",
     }
+    this.agent = chai.request.agent(server)
   }
 
-  loginAsPatient(patientId: number): this {
-    const token = jwt.sign({
-      user: {
-        patientId,
-      }
-    }, config.get("JWTSecret"), { expiresIn: '1h' })
-
-    this.headers['Authorization'] = `Bearer ${token}`
+  async loginAsPatient(patientId: number): Promise<this> {
+    await this.agent.post("/auth/testLogin").send({
+      patientId,
+    })
     return this
   }
 
-  loginAsDoctor(doctorId: number): this {
-    const token = jwt.sign({
-      user: {
-        doctorId
-      },
-    }, config.get("JWTSecret"), { expiresIn: '1h' })
-
-    this.headers['Authorization'] = `Bearer ${token}`
+  async loginAsDoctor(doctorId: number): Promise<this> {
+    await this.agent.post("/auth/testLogin").send({
+      doctorId,
+    })
     return this
   }
 
@@ -74,8 +68,6 @@ class RequestBuilder {
   }
 
   build(): request.SuperAgentRequest {
-    const agent = chai.request(this.server)
-
     if (this.method == null) {
       throw new Error("missing request method in the RequestBuilder")
     }
@@ -86,13 +78,13 @@ class RequestBuilder {
 
     let request: any = null
     if (this.method === "post") {
-      request = agent.post(this.endpoint)
+      request = this.agent.post(this.endpoint)
     } else if (this.method === "get") {
-      request = agent.get(this.endpoint)
+      request = this.agent.get(this.endpoint)
     } else if (this.method === "put") {
-      request = agent.put(this.endpoint)
+      request = this.agent.put(this.endpoint)
     } else if (this.method === "delete") {
-      request = agent.delete(this.endpoint)
+      request = this.agent.delete(this.endpoint)
     }
 
     if (request == null) {
@@ -102,6 +94,10 @@ class RequestBuilder {
     request.set(this.headers)
 
     return request
+  }
+
+  close(): void {
+    this.agent.close()
   }
 }
 
@@ -118,4 +114,10 @@ export const binaryParser = (res: any, callback: any) => {
   res.on("end", function () {
     callback(null, Buffer.from(res.data, "binary"));
   });
+}
+
+export const sleep = (delay: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), delay)
+  })
 }

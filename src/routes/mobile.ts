@@ -42,8 +42,6 @@ router.post(
     try {
       const patient = res.locals.patient as Patient
 
-      console.log(req.body) // TODO: remove
-
       if (!syncValidator(req.body)) {
         return res.status(400).json({ message: syncValidator.errors })
       }
@@ -151,7 +149,7 @@ router.post(
         })
       }
     } catch (err) {
-      console.log(err)
+      //console.log(err)
       next(err)
     }
   }

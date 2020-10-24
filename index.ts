@@ -5,14 +5,17 @@ import * as bodyParser from "body-parser"
 import passport from "passport"
 import secureRoutes from "./src/routes/secure"
 import authRoutes from "./src/routes/auth/root"
-import { configurePassport } from "./src/auth/passport"
+import { configurePassport, ensureAuthenticated } from "./src/auth/passport"
 import { HttpError } from "./errors"
 import config from "config"
 import fileUpload from "express-fileupload"
 import morgan from "morgan"
 import { redisClient } from "./src/redis"
 import exphbs from "express-handlebars"
-import { configureSpid } from "./src/routes/auth/spid";
+import { configureSpid } from "./src/routes/auth/spid"
+import session from "express-session"
+import connectRedis from "connect-redis"
+const RedisStore = connectRedis(session)
 
 const PORT = 8000;
 
@@ -42,8 +45,6 @@ export const initializeApp = async (): Promise<express.Express> => {
     app.use(morgan("dev"))
   }
 
-  configurePassport()
-
   app.engine('handlebars', exphbs())
   app.set('view engine', 'handlebars')
 
@@ -55,10 +56,22 @@ export const initializeApp = async (): Promise<express.Express> => {
     abortOnLimit: true,
     limits: { fileSize: 50 * 1024 * 1024 },
   }))
+  app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    secret: config.get("SessionSecret"),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: config.util.getEnv("NODE_ENV") === "production",
+    }
+  }))
 
   app.use(passport.initialize())
+  app.use(passport.session())
 
-  app.use('/api', passport.authenticate('jwt', { session: false }), secureRoutes)
+  configurePassport()
+
+  app.use('/api', ensureAuthenticated, secureRoutes)
   app.use('/auth', authRoutes)
   app.use('/static', express.static("public"))
   app.get('/', (req, res) => res.send('NAD-APP Server'))

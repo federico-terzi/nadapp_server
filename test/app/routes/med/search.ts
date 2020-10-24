@@ -7,8 +7,8 @@ import { authRequest, RequestMethods } from "../../../testUtils";
 describe("med (search)", () => {
   it("authorized doctor should search correctly", async () => {
     const patients = (await Patient.query().findByIds([2,3]).orderBy("lastName", "asc")).map(patient => patient.getNameInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/search?q=ri")
       .build()
       .send()
@@ -21,8 +21,8 @@ describe("med (search)", () => {
 
   it("authorized doctor should search correctly (2)", async () => {
     const patients = (await Patient.query().findByIds([2]).orderBy("lastName", "asc")).map(patient => patient.getNameInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/search?q=caterina")
       .build()
       .send()
@@ -34,8 +34,8 @@ describe("med (search)", () => {
   })
 
   it("missing query parameter is handled correctly", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/search")
       .build()
       .send()

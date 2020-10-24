@@ -7,6 +7,7 @@ import util from "util"
 import fsExtra from "fs-extra"
 import express from "express"
 import { flushall } from "../../src/redis"
+import { sleep } from "../testUtils"
 
 const mkdir = util.promisify(fs.mkdir)
 

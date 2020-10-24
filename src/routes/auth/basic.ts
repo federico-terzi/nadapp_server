@@ -9,6 +9,7 @@ import Doctor from "../../model/doctor"
 import { set, get, del, redisClient } from "../../redis"
 import Crypto from "crypto"
 import { randomDigitCode, randomString } from "../../util"
+import { UserInfo } from "../../auth/passport"
 
 const TWO_FACTOR_CODE_LENGTH = 6           // 6 digits
 const TWO_FACTOR_CODE_EXPIRATION = 60 * 10 // 10 minutes
@@ -16,7 +17,7 @@ export const REDIS_VERIFICATION_PREFIX = "VERIFY-USER-"
 
 interface RedisVerificationPayload {
   code: string,
-  user: any,
+  user: UserInfo,
 }
 
 const router = Router()
@@ -134,9 +135,10 @@ router.post(
         throw new HttpError("invalid code", 401)
       }
       
-      // Generate the JWT token
-      const token = jwt.sign({ user: redisPayload.user }, config.get("JWTSecret"))
-      return res.json({ token });
+      req.logIn(redisPayload.user, err => {
+        if (err) { return next(err) }
+        res.json({result: "OK"})
+      })
     } catch (err) {
       next(err)
     }

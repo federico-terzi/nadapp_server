@@ -22,8 +22,8 @@ describe("mobile", () => {
   })
 
   it("doctor can't sync", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .post("/api/mobile/sync")
       .build()
       .send()
@@ -34,8 +34,8 @@ describe("mobile", () => {
   })
 
   it("non-existent patient can't sync", async () => {
-    const res = await authRequest(app)
-      .loginAsPatient(9999)
+    const res = await (await authRequest(app)
+      .loginAsPatient(9999))
       .post("/api/mobile/sync")
       .build()
       .send()
@@ -46,8 +46,8 @@ describe("mobile", () => {
   })
 
   it("malformed body should be handled correctly", async () => {
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -58,11 +58,11 @@ describe("mobile", () => {
 
   it("first sync should dump all information", async () => {
     const patient = await Patient.query().findById(1)
-    const meals = (await Meal.query().findByIds([1,2]).orderBy("date", "desc")).map(meal => meal.getInfo())
-    const balances = (await Balance.query().findByIds([1,2,4]).orderBy("date", "desc")).map(balance => balance.getInfo())
+    const meals = (await Meal.query().findByIds([1, 2]).orderBy("date", "desc")).map(meal => meal.getInfo())
+    const balances = (await Balance.query().findByIds([1, 2, 4]).orderBy("date", "desc")).map(balance => balance.getInfo())
     const doctors = (await Doctor.query().findByIds([4])).map(doctor => doctor.getSyncInfo())
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -81,8 +81,8 @@ describe("mobile", () => {
 
   it("user already in sync should not receive all information", async () => {
     const patient = await Patient.query().findById(1)
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -97,7 +97,7 @@ describe("mobile", () => {
   it("add meal works correctly", async () => {
     const patient = await Patient.query().findById(1)
     const meals = await Meal.query().select().where("patientId", patient.id)
-    expect(meals.map(meal => meal.id)).to.be.deep.eq([1,2])
+    expect(meals.map(meal => meal.id)).to.be.deep.eq([1, 2])
 
     const newMeals = [
       {
@@ -111,8 +111,8 @@ describe("mobile", () => {
         meal: "pasta al pesto 80 grammi"
       },
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -143,8 +143,8 @@ describe("mobile", () => {
         meal: "tortellini in brodo 50 grammi"
       },
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -163,7 +163,7 @@ describe("mobile", () => {
 
   it("conflicting uuid doesn't override entry of other patient", async () => {
     const patient = await Patient.query().findById(1)
-    
+
     // There should be an entry (of another patient) with the same UUID
     expect((await Meal.query().where("uuid", "a514ce42-4b62-4797-a589-36a0bf1571d7")).length).to.be.eq(1)
 
@@ -174,8 +174,8 @@ describe("mobile", () => {
         meal: "tortellini in brodo 50 grammi"
       },
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -190,7 +190,7 @@ describe("mobile", () => {
     // Now we should have 2 of them
     expect((await Meal.query().where("uuid", "a514ce42-4b62-4797-a589-36a0bf1571d7")).length).to.be.eq(2)
   })
-  
+
   it("client data should have priority if a conflict occurs", async () => {
     const updatedMeals = [
       {
@@ -199,8 +199,8 @@ describe("mobile", () => {
         meal: "tortellini in brodo 50 grammi"
       },
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -222,7 +222,7 @@ describe("mobile", () => {
     expect(balances.map(balance => balance.id)).to.be.deep.eq([3, 5])
 
     const newBalances = [
-      { 
+      {
         uuid: "ae5a453b-7502-4c4e-8a40-c7fdf0e33cf9",
         date: new Date().toISOString(),
         minPressure: 60,
@@ -243,8 +243,8 @@ describe("mobile", () => {
         date: new Date().toISOString(),
       }
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(2)
+    const res = await (await authRequest(app)
+      .loginAsPatient(2))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -265,7 +265,7 @@ describe("mobile", () => {
   it("update balance works correctly", async () => {
     const patient = await Patient.query().findById(1)
     const previousBalance = renderJson((await Balance.query().findById(4)).getInfo())
-    expect(previousBalance).to.be.deep.eq({ 
+    expect(previousBalance).to.be.deep.eq({
       uuid: "4f53980d-5bf2-4646-983e-17d5b278f2be",
       date: previousBalance.date,
       minPressure: 64,
@@ -273,7 +273,7 @@ describe("mobile", () => {
     })
 
     const updatedBalances = [
-      { 
+      {
         uuid: "4f53980d-5bf2-4646-983e-17d5b278f2be",
         date: previousBalance.date,
         minPressure: 64,
@@ -281,8 +281,8 @@ describe("mobile", () => {
         heartFrequency: 65
       }
     ]
-    const res = await authRequest(app)
-      .loginAsPatient(1)
+    const res = await (await authRequest(app)
+      .loginAsPatient(1))
       .post("/api/mobile/sync")
       .build()
       .send({
@@ -295,7 +295,7 @@ describe("mobile", () => {
     })
 
     const updatedBalance = renderJson((await Balance.query().findById(4)).getInfo())
-    expect(updatedBalance).to.be.deep.eq({ 
+    expect(updatedBalance).to.be.deep.eq({
       uuid: "4f53980d-5bf2-4646-983e-17d5b278f2be",
       date: updatedBalance.date,
       minPressure: 64,
@@ -308,20 +308,20 @@ describe("mobile", () => {
 describe("mobile (reports)", () => {
   beforeEach(async () => {
     // Load some reports
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/1/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
@@ -329,27 +329,29 @@ describe("mobile (reports)", () => {
 
   it("authorized patient should download report", (done) => {
     authRequest(app)
-      .loginAsPatient(3)
-      .get("/api/mobile/reports/3/download")
-      .build()
-      .buffer()
-      .parse(binaryParser)
-      .end((err, res) => {
-        if (err) done(err)
-        expect(res).to.have.status(200)
-        expect(res.headers).to.have.property("content-disposition")
-        expect(res.headers["content-type"]).to.be.eq("application/pdf")
+      .loginAsPatient(3).then(req => {
+        req.get("/api/mobile/reports/3/download")
+          .build()
+          .buffer()
+          .parse(binaryParser)
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res).to.have.status(200)
+            expect(res.headers).to.have.property("content-disposition")
+            expect(res.headers["content-type"]).to.be.eq("application/pdf")
 
-        // Make sure the resulting report content is correct
-        const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
-        expect(res.body).to.be.deep.eq(expectedContent)
-        done()
+            // Make sure the resulting report content is correct
+            const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
+            expect(res.body).to.be.deep.eq(expectedContent)
+            done()
+          })
       })
+
   })
 
   it("patient cannot read a report that doesn't belong to him", async () => {
-    const res = await authRequest(app)
-      .loginAsPatient(3)
+    const res = await (await authRequest(app)
+      .loginAsPatient(3))
       .get("/api/mobile/reports/1/download")  // Report 1 does not belong to patient 3
       .build()
       .send()
@@ -360,8 +362,8 @@ describe("mobile (reports)", () => {
   })
 
   it("non-existing report", async () => {
-    const res = await authRequest(app)
-      .loginAsPatient(3)
+    const res = await (await authRequest(app)
+      .loginAsPatient(3))
       .get("/api/mobile/reports/9999/download")
       .build()
       .send()

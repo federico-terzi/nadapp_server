@@ -17,8 +17,8 @@ chai.use(chaiHttp)
 describe("admin (doctor-info)", () => {
   it("should display doctor info correctly", async () => {
     const doctor = renderJson((await Doctor.query().findById(2)).getInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const agent = await authRequest(app).loginAsDoctor(1)
+    const res = await agent
       .get("/api/admin/doctors/2/info")
       .build()
       .send()
@@ -26,26 +26,29 @@ describe("admin (doctor-info)", () => {
     expect(res.body).to.be.deep.eq({
       info: doctor,
     })
+    agent.close()
   })
 
   it("non existent doctor should not crash", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const agent = await authRequest(app).loginAsDoctor(1)
+    const res = await agent
       .get("/api/admin/doctors/99999/info")
       .build()
       .send()
+
     expect(res).to.have.status(404)
     expect(res.body).to.be.deep.eq({
       error: "doctor not found"
     })
+    agent.close()
   })
 })
 
 describe("admin (doctor-patients)", () => {
   it("should display authorized patients correctly", async () => {
     const patients = renderJson((await Patient.query().findByIds([2,3]).orderBy("lastName", "asc")).map(patient => patient.getShortInfo()))
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .get("/api/admin/doctors/2/patients")
       .build()
       .send()
@@ -57,8 +60,8 @@ describe("admin (doctor-patients)", () => {
 
   it("admin should show all patients as being authorized", async () => {
     const patients = renderJson((await Patient.query().orderBy("lastName", "asc")).map(patient => patient.getShortInfo()))
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .get("/api/admin/doctors/1/patients")
       .build()
       .send()

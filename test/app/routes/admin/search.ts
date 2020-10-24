@@ -8,8 +8,8 @@ describe("admin (search)", () => {
   it("admin should search correctly including the doctors", async () => {
     const patients = (await Patient.query().findByIds([1,2,3]).orderBy("lastName", "asc")).map(patient => patient.getNameInfo())
     const doctors = (await Doctor.query().findByIds([4]).orderBy("lastName", "asc")).map(doctor => doctor.getNameInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .get("/api/med/search?q=ri")
       .build()
       .send()

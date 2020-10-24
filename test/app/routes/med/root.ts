@@ -39,8 +39,8 @@ describe("/med permission check", () => {
   it("patient cannot access med endpoints", async () => {
     for (let endpoint of allMedEndpoints) {
       for (let method of RequestMethods) {
-        const res = await authRequest(app)
-          .loginAsPatient(1)
+        const res = await (await authRequest(app)
+          .loginAsPatient(1))
           .request(method, endpoint)
           .build()
           .send()
@@ -55,8 +55,8 @@ describe("/med permission check", () => {
   it("unauthorized doctor cannot access non-authorized patient endpoints", async () => {
     for (let endpoint of patientEndpoints) {
       for (let method of RequestMethods) {
-        const res = await authRequest(app)
-          .loginAsDoctor(2)  // Doctor 2 is not authorized to view patient 1 info
+        const res = await (await authRequest(app)
+          .loginAsDoctor(2))  // Doctor 2 is not authorized to view patient 1 info
           .request(method, endpoint)
           .build()
           .send()
@@ -71,8 +71,8 @@ describe("/med permission check", () => {
   it("non-existant doctor cannot access non-authorized patient endpoints", async () => {
     for (let endpoint of patientEndpoints) {
       for (let method of RequestMethods) {
-        const res = await authRequest(app)
-          .loginAsDoctor(99999)
+        const res = await (await authRequest(app)
+          .loginAsDoctor(99999))
           .request(method, endpoint)
           .build()
           .send()
@@ -89,28 +89,30 @@ describe("med (root)", () => {
   it("normal doctor can see authorized patient profiles correctly", (done) => {
     // Test doctor carlo.alberti, which is authorized to see only some patients
     authRequest(app)
-      .loginAsDoctor(2)
-      .get("/api/med/patients")
-      .build()
-      .send()
-      .end((err, res) => {
-        if (err) done(err)
-        expect(res).to.have.status(200)
-        expect(res.body).to.have.property("patients")
-        expect(res.body.patients).to.be.deep.eq([
-          {
-            id: 2,
-            firstName: "Caterina",
-            lastName: "Verdi"
-          },
-          {
-            id: 3,
-            firstName: "Maria",
-            lastName: "Lambertini"
-          }
-        ])
-        done()
+      .loginAsDoctor(2).then(req => {
+        req.get("/api/med/patients")
+          .build()
+          .send()
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res).to.have.status(200)
+            expect(res.body).to.have.property("patients")
+            expect(res.body.patients).to.be.deep.eq([
+              {
+                id: 2,
+                firstName: "Caterina",
+                lastName: "Verdi"
+              },
+              {
+                id: 3,
+                firstName: "Maria",
+                lastName: "Lambertini"
+              }
+            ])
+            done()
+          })
       })
+
   })
 
   it("admin can see all patients", async () => {
@@ -121,8 +123,8 @@ describe("med (root)", () => {
         lastName: patient.lastName
       }
     })
-    const res = await authRequest(app)
-      .loginAsDoctor(1) // Admin
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1)) // Admin
       .get("/api/med/patients")
       .build()
       .send()

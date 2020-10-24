@@ -12,6 +12,8 @@ export const redisClient = redis.createClient({
   port: redisConfig.port,
 })
 
+redisClient.on('error', console.error)
+
 export const flushall = util.promisify(redisClient.flushall).bind(redisClient)
 export const set = (key: string, value: string, mode: string, duration: number): Promise<string> => {
   return new Promise((resolve, reject) => {

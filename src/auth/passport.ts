@@ -1,21 +1,30 @@
-import config from "config"
 import passport from "passport"
-import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt"
+import express from "express"
+
+export interface PatientInfo {
+  patientId?: number,
+}
+
+export interface DoctorInfo {
+  doctorId?: number,
+}
+
+export type UserInfo = PatientInfo | DoctorInfo
+
+export const ensureAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.isAuthenticated()) {
+    next()
+  } else{
+    res.sendStatus(401)
+  }
+}
 
 export const configurePassport = () => {
-  passport.use(
-    new JWTStrategy(
-      {
-        secretOrKey: config.get("JWTSecret"),
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
-      },
-      async (token, done) => {
-        try {
-          return done(null, token.user);
-        } catch (error) {
-          done(error);
-        }
-      }
-    )
-  )
+  passport.serializeUser((user: UserInfo, done) => {
+    done(null, user)
+  })
+
+  passport.deserializeUser((user: UserInfo, done) => {
+    done(null, user)
+  })
 }

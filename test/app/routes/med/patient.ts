@@ -17,8 +17,8 @@ chai.use(chaiHttp)
 describe("med (patient-info)", () => {
   it("authorized doctor should see patient info correctly", async () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/3/info")
       .build()
       .send()
@@ -30,8 +30,8 @@ describe("med (patient-info)", () => {
 
   it("admin should see patient info correctly", async () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .get("/api/med/patients/3/info")
       .build()
       .send()
@@ -42,8 +42,8 @@ describe("med (patient-info)", () => {
   })
 
   it("invalid string as patient id should not crash", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/abc/info")
       .build()
       .send()
@@ -52,10 +52,10 @@ describe("med (patient-info)", () => {
       error: "bad patient id format",
     })
   })
-  
+
   it("non-existent patient id should not crash", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/9999/info")
       .build()
       .send()
@@ -66,8 +66,8 @@ describe("med (patient-info)", () => {
   })
 
   it("non-existent patient id should not crash as admin", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .get("/api/med/patients/9999/info")
       .build()
       .send()
@@ -82,8 +82,8 @@ describe("med (patient-doctors)", () => {
   it("authorized doctor should see patient authorized doctors correctly", async () => {
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const doctor = renderJson((await Doctor.query().findById(2)).getShortInfo())
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/3/doctors")
       .build()
       .send()
@@ -100,11 +100,11 @@ describe("med (patient-doctors)", () => {
 
 describe("med (patient-meals)", () => {
   it("authorized doctor should see patient meals correctly", async () => {
-    const meals = (await Meal.query().findByIds([3,4]).orderBy("date", "desc")).map(meal => meal.getInfo())
+    const meals = (await Meal.query().findByIds([3, 4]).orderBy("date", "desc")).map(meal => meal.getInfo())
     expect(meals.length).to.be.eq(2)
     const jsonMeals = renderJson(meals)
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/2/meals")
       .build()
       .send()
@@ -117,11 +117,11 @@ describe("med (patient-meals)", () => {
 
 describe("med (patient-balances)", () => {
   it("authorized doctor should see patient balances correctly", async () => {
-    const balances = (await Balance.query().findByIds([3,5]).orderBy("date", "desc")).map(balance => balance.getInfo())
+    const balances = (await Balance.query().findByIds([3, 5]).orderBy("date", "desc")).map(balance => balance.getInfo())
     expect(balances.length).to.be.eq(2)
     const jsonBalances = renderJson(balances)
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/2/balances")
       .build()
       .send()
@@ -135,20 +135,20 @@ describe("med (patient-balances)", () => {
 describe("med (patient-reports)", () => {
   beforeEach(async () => {
     // Load some reports
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/1/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
 
-    await authRequest(app)
-      .loginAsDoctor(1)
+    await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
@@ -157,8 +157,8 @@ describe("med (patient-reports)", () => {
   it("authorized doctor should see reports", async () => {
     const reports = renderJson((await Report.query().where("patientId", 3).orderBy("date", "desc")).map(report => report.getInfo()))
     expect(reports.length).to.be.eq(2)
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/3/reports")
       .build()
       .send()
@@ -170,27 +170,28 @@ describe("med (patient-reports)", () => {
 
   it("authorized doctor should download report", (done) => {
     authRequest(app)
-      .loginAsDoctor(2)
-      .get("/api/med/patients/3/reports/2/download")
-      .build()
-      .buffer()
-      .parse(binaryParser)
-      .end((err, res) => {
-        if (err) done(err)
-        expect(res).to.have.status(200)
-        expect(res.headers).to.have.property("content-disposition")
-        expect(res.headers["content-type"]).to.be.eq("application/pdf")
+      .loginAsDoctor(2).then(req => {
+        req.get("/api/med/patients/3/reports/2/download")
+          .build()
+          .buffer()
+          .parse(binaryParser)
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res).to.have.status(200)
+            expect(res.headers).to.have.property("content-disposition")
+            expect(res.headers["content-type"]).to.be.eq("application/pdf")
 
-        // Make sure the resulting report content is correct
-        const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
-        expect(res.body).to.be.deep.eq(expectedContent)
-        done()
+            // Make sure the resulting report content is correct
+            const expectedContent = fs.readFileSync("test/resources/testreport.pdf")
+            expect(res.body).to.be.deep.eq(expectedContent)
+            done()
+          })
       })
   })
 
   it("report mismatch with patient", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/3/reports/1/download")  // Report 1 does not belong to patient 3
       .build()
       .send()
@@ -201,8 +202,8 @@ describe("med (patient-reports)", () => {
   })
 
   it("non-existing report", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .get("/api/med/patients/3/reports/9999/download")  // Report 1 does not belong to patient 3
       .build()
       .send()
@@ -218,15 +219,15 @@ describe("med (patient-reports)", () => {
 
     const reportFileContent = fs.readFileSync("test/resources/testreport.pdf")
 
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
     expect(res).to.have.status(200)
     expect(res.body.report).to.have.property("date")
     expect(res.body.report).to.have.property("id")
-    
+
     // Extract the record from the returned id
     const report = await Report.query().findById(res.body.report.id)
 
@@ -234,7 +235,7 @@ describe("med (patient-reports)", () => {
     const uploadedFilePath = path.join(config.get("uploadDestinationDir"), report.location)
     // Make sure the file exists
     expect(fs.existsSync(uploadedFilePath)).to.be.true
-    
+
     // Decrypt the file and check the content
     const uploadedFileContent = fs.readFileSync(uploadedFilePath)
     const [iv, key] = report.getIVKey()
@@ -243,8 +244,8 @@ describe("med (patient-reports)", () => {
   })
 
   it("upload without file should fail", async () => {
-    const res = await authRequest(app)
-      .loginAsDoctor(1)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(1))
       .post("/api/med/patients/3/reports/upload")
       .build()
       .send()
@@ -258,8 +259,8 @@ describe("med (patient-reports)", () => {
     const reports = await Report.query().where("patientId", 1)
     expect(reports.length).to.be.eq(1)
 
-    const res = await authRequest(app)
-      .loginAsDoctor(2)
+    const res = await (await authRequest(app)
+      .loginAsDoctor(2))
       .post("/api/med/patients/1/reports/upload")
       .build()
       .attach("file", "test/resources/testreport.pdf")
