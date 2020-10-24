@@ -132,11 +132,11 @@ export const spidServiceProviderConfig: IServiceProviderConfig = {
     name: "Required attrs"
   },
   //spidCieUrl: "https://idserver.servizicie.interno.gov.it:8443/idp/shibboleth",
-  spidTestEnvUrl: "http://localhost:8088",
+  spidTestEnvUrl: "http://spidtestenv:8088",
   //spidValidatorUrl: "http://localhost:8080",
   strictResponseValidation: {
     //"http://localhost:8080": true,
-    "http://localhost:8088": true
+    "http://spidtestenv:8088": true
   }
 };
 
@@ -146,12 +146,12 @@ export const spidSamlConfig: SamlConfig = {
   acceptedClockSkewMs: 0,
   attributeConsumingServiceIndex: "0",
   authnContext: "https://www.spid.gov.it/SpidL1",
-  callbackUrl: "http://localhost:8000" + spidAppConfig.assertionConsumerServicePath,
+  callbackUrl: "http://nadappserver:8000" + spidAppConfig.assertionConsumerServicePath,
   // decryptionPvk: fs.readFileSync("./certs/key.pem", "utf-8"),
   identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-  issuer: "http://localhost:8000/", // https://spid.agid.gov.it/cd
-  idpIssuer: "http://localhost:8088/",
-  logoutCallbackUrl: "http://localhost:8000/spid/slo",
+  issuer: "http://nadappserver:8000/", // https://spid.agid.gov.it/cd
+  idpIssuer: "http://spidtestenv:8088/",
+  logoutCallbackUrl: "http://nadappserver:8000/spid/slo",
   privateCert: fs.readFileSync(externalSpidConfig.privateCertPath, "utf-8"),
   validateInResponseTo: true
 };

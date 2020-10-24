@@ -30,6 +30,9 @@ export const configureSpid = (app: Express, redisClient: RedisClient): Promise<v
             message: "Grazie, verrai reindirizzato a breve"
           })
         )
+        withSpidApp.get("/spid", (req, res) =>
+          res.render("spid-select-page")
+        )
         withSpidApp.get(spidAppConfig.clientErrorRedirectionUrl, (req, res) =>
           res.render("spid-redirect-page", {
             message: req.query.errorMessage

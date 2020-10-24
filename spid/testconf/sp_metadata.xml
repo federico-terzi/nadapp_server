@@ -3,7 +3,7 @@
 <md:EntityDescriptor
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    entityID="http://localhost:8000/"
+    entityID="http://nadappserver:8000/"
     ID="_681a637-6cd4-434f-92c3-4fed720b2ad8">
 
     <md:SPSSODescriptor
@@ -52,13 +52,13 @@ ksLwpoOCZNTLz88o15Bc/lVn49pQubOKXnyBCx7yN+mFm40Z
 
         <md:SingleLogoutService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-            Location="https://localhost:8000/spid/logout" />
+            Location="https://nadappserver:8000/spid/logout" />
 
         <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
 
         <md:AssertionConsumerService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-            Location="http://localhost:8000/spid/acs"
+            Location="http://nadappserver:8000/spid/acs"
             index="0"
             isDefault="true" />
 
@@ -74,7 +74,7 @@ ksLwpoOCZNTLz88o15Bc/lVn49pQubOKXnyBCx7yN+mFm40Z
     <md:Organization>
         <md:OrganizationName xml:lang="it">NAD-APP</md:OrganizationName>
         <md:OrganizationDisplayName xml:lang="it">NAD-APP Centro IICB Ospedale Sant'Orsola Bologna</md:OrganizationDisplayName>
-        <md:OrganizationURL xml:lang="it">http://localhost:8000/</md:OrganizationURL>
+        <md:OrganizationURL xml:lang="it">http://nadappserver:8000/</md:OrganizationURL>
     </md:Organization>
 
 </md:EntityDescriptor>
