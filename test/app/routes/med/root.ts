@@ -14,12 +14,13 @@ describe("/med permission check", () => {
     "/api/med/patients/1/balances",
     "/api/med/patients/1/reports",
     "/api/med/patients/1/report/1/download",
-    "/api/med/patients/1/report/upload"
+    "/api/med/patients/1/report/upload",
   ]
 
   const allMedEndpoints = [
     "/api/med/patients",
     "/api/med/search",
+    "/api/med/info",
     ...patientEndpoints
   ]
 

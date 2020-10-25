@@ -76,6 +76,8 @@ export const initializeApp = async (): Promise<express.Express> => {
   app.use('/static', express.static("public"))
   app.get('/', (req, res) => res.send('NAD-APP Server'))
 
+  await configureSpid(app, redisClient)
+
   // Handle errors.
   app.use((err: any, req: any, res: any, next: NextFunction) => {
     if (err instanceof HttpError) {
@@ -94,7 +96,6 @@ export const initializeApp = async (): Promise<express.Express> => {
     }
   })
 
-  await configureSpid(app, redisClient)
 
   app.listen(PORT, () => {
     console.log(`[server]: Server is running at https://localhost:${PORT}`);

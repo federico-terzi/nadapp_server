@@ -32,6 +32,20 @@ router.use(async (req, res, next) => {
 })
 
 router.get(
+  '/info',
+  async (req, res, next) => {
+    try {
+      const doctor = res.locals.doctor as Doctor
+      res.json({
+        info: doctor.getFullInfo(),
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+);
+
+router.get(
   '/patients',
   async (req, res, next) => {
     try {

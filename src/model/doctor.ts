@@ -91,6 +91,21 @@ export default class Doctor extends Model {
     }
   }
 
+  getFullInfo() {
+    return {
+      id: this.id,
+      username: this.username,
+      telephone: this.telephone,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      title: this.title,
+      publicTelephone: this.publicTelephone,
+      email: this.email,
+      address: this.address,
+      CF: this.CF,
+    }
+  }
+
   getSyncInfo() {
     return {
       name: `${this.title} ${this.firstName} ${this.lastName}`.trim(),

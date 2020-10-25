@@ -137,7 +137,7 @@ router.post(
       
       req.logIn(redisPayload.user, err => {
         if (err) { return next(err) }
-        res.json({result: "OK"})
+        res.json({result: "ok"})
       })
     } catch (err) {
       next(err)

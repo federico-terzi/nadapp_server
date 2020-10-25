@@ -20,6 +20,9 @@ import jwt from "jsonwebtoken";
 import { SamlConfig } from "passport-saml";
 import Doctor from "../model/doctor";
 import Patient from "../model/patient";
+import { set, redisClient } from "../redis";
+import { randomString } from "../util";
+import { UserInfo } from "./passport";
 
 interface ExternalSPIDConfig {
   privateCertPath: string,
@@ -44,7 +47,7 @@ export const spidAssertionConsumerServiceCallback: AssertionConsumerServiceT = a
   // Because fiscal numbers use the format: TINIT-<actual number>, we need to remove the prefix
   const fiscalNumber = rawFiscalNumber.replace("TINIT-", "")
 
-  let userTokenPayload = null
+  let userTokenPayload: UserInfo | null = null
 
   // First check if the fiscal number belongs to a patient
   const patient = await Patient.query().where("CF", fiscalNumber).first()
@@ -68,9 +71,12 @@ export const spidAssertionConsumerServiceCallback: AssertionConsumerServiceT = a
     } as UrlFromString)
   }
 
-  // Generate the JWT token
-  const token = jwt.sign({ user: userTokenPayload }, config.get("JWTSecret"))
-  return ResponsePermanentRedirect({ href: "/spid/success?token="+encodeURIComponent(token)} as UrlFromString);
+  // Generate a random verification token
+  const verificationToken = randomString(100)
+  // Save the token to redis
+  await set(verificationToken, JSON.stringify(userTokenPayload), "EX", 60)
+
+  return ResponsePermanentRedirect({ href: "/spid/success?token="+encodeURIComponent(verificationToken)} as UrlFromString);
 };
 
 export const spidLogoutCallback: LogoutT = async () =>
