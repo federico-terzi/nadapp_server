@@ -48,6 +48,7 @@ export const spidAssertionConsumerServiceCallback: AssertionConsumerServiceT = a
   const fiscalNumber = rawFiscalNumber.replace("TINIT-", "")
 
   let userTokenPayload: UserInfo | null = null
+  let isDoctor = false
 
   // First check if the fiscal number belongs to a patient
   const patient = await Patient.query().where("CF", fiscalNumber).first()
@@ -62,6 +63,7 @@ export const spidAssertionConsumerServiceCallback: AssertionConsumerServiceT = a
       userTokenPayload = {
         doctorId: doctor.id
       }
+      isDoctor = true
     }
   }
 
@@ -76,7 +78,12 @@ export const spidAssertionConsumerServiceCallback: AssertionConsumerServiceT = a
   // Save the token to redis
   await set(verificationToken, JSON.stringify(userTokenPayload), "EX", 60)
 
-  return ResponsePermanentRedirect({ href: "/spid/success?token="+encodeURIComponent(verificationToken)} as UrlFromString);
+  if (!isDoctor) {
+    return ResponsePermanentRedirect({ href: "/spid/success?token="+encodeURIComponent(verificationToken)} as UrlFromString);
+  } else {
+    // TODO: change host
+    return ResponsePermanentRedirect({ href: "http://localhost:3000/login?spidToken="+encodeURIComponent(verificationToken)} as UrlFromString);
+  }
 };
 
 export const spidLogoutCallback: LogoutT = async () =>

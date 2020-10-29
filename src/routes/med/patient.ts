@@ -74,7 +74,6 @@ router.get(
       const jsonDoctors = authorizedDoctors.map(doctor => doctor.getShortInfo())
 
       // TODO: only the admin should see the authorized doctors?
-      // TODO: test unauthorized
 
       res.json({
         doctors: jsonDoctors,
