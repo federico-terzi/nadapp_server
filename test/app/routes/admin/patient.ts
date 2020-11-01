@@ -9,6 +9,7 @@ chai.use(chaiHttp)
 
 describe("admin (patient-info)", () => {
   it("admin can edit patient info", async () => {
+    const previousLastEdit = (await Patient.query().findById(3)).lastServerEdit
     const res = await (await authRequest(app)
       .loginAsDoctor(1))
       .put("/api/admin/patients/3/info")
@@ -39,9 +40,14 @@ describe("admin (patient-info)", () => {
       birthDate: "1987-12-03T00:00:00.000Z",
       notes: null
     })
+
+    const newLastEdit = (await Patient.query().findById(3)).lastServerEdit
+    expect(newLastEdit).to.be.greaterThan(previousLastEdit)
   })
 
   it("admin can edit patient info (partial)", async () => {
+    const previousLastEdit = (await Patient.query().findById(3)).lastServerEdit
+
     const patient = renderJson((await Patient.query().findById(3)).getInfo())
     const res = await (await authRequest(app)
       .loginAsDoctor(1))
@@ -60,6 +66,9 @@ describe("admin (patient-info)", () => {
       ...patient,
       CF: "MRRLCA87ALEH124H"
     })
+
+    const newLastEdit = (await Patient.query().findById(3)).lastServerEdit
+    expect(newLastEdit).to.be.greaterThan(previousLastEdit)
   })
 
   it("admin can edit patient info (trim fields correctly)", async () => {
@@ -86,6 +95,8 @@ describe("admin (patient-info)", () => {
 
 describe("admin (patient-doctor-authorization)", () => {
   it("admin authorize a new doctor for patient", async () => {
+    const previousLastEdit = (await Patient.query().findById(1)).lastServerEdit
+
     const authorizedPatients = await Doctor.relatedQuery<Patient>("patients").for(2)
     expect(authorizedPatients.map(p => p.id)).to.be.deep.eq([2,3])
     const res = await (await authRequest(app)
@@ -100,6 +111,9 @@ describe("admin (patient-doctor-authorization)", () => {
 
     const newAuthorizedPatients = await Doctor.relatedQuery<Patient>("patients").for(2)
     expect(newAuthorizedPatients.map(p => p.id).sort()).to.be.deep.eq([1,2,3])
+
+    const newLastEdit = (await Patient.query().findById(1)).lastServerEdit
+    expect(newLastEdit).to.be.greaterThan(previousLastEdit)
   })
 
   it("double authorization should not crash", async () => {
@@ -130,6 +144,8 @@ describe("admin (patient-doctor-authorization)", () => {
   })
 
   it("admin deauthorize a doctor for patient correctly", async () => {
+    const previousLastEdit = (await Patient.query().findById(2)).lastServerEdit
+
     const authorizedPatients = await Doctor.relatedQuery<Patient>("patients").for(2)
     expect(authorizedPatients.map(p => p.id)).to.be.deep.eq([2,3])
     const res = await (await authRequest(app)
@@ -144,6 +160,9 @@ describe("admin (patient-doctor-authorization)", () => {
 
     const newAuthorizedPatients = await Doctor.relatedQuery<Patient>("patients").for(2)
     expect(newAuthorizedPatients.map(p => p.id).sort()).to.be.deep.eq([3])
+
+    const newLastEdit = (await Patient.query().findById(2)).lastServerEdit
+    expect(newLastEdit).to.be.greaterThan(previousLastEdit)
   })
 
   it("invalid doctor id should not crash", async () => {

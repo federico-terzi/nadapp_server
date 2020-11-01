@@ -189,6 +189,10 @@ router.post(
         location: finalFilename,
       })
 
+      await Patient.query().findById(patientId).patch({
+        lastServerEdit: new Date()
+      })
+
       res.json({
         report: report.getInfo()
       })

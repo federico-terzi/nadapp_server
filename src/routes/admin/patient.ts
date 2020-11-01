@@ -81,6 +81,10 @@ router.post(
 
       await Doctor.knex().raw("INSERT INTO authorized_doctors (\"doctorId\", \"patientId\") VALUES (?, ?) ON CONFLICT DO NOTHING", [doctorId, patientId])
 
+      await Patient.query().findById(patientId).patch({
+        lastServerEdit: new Date()
+      })
+
       res.json({
         result: "ok"
       })
@@ -106,6 +110,10 @@ router.delete(
       }
 
       await Doctor.knex().raw("DELETE FROM authorized_doctors WHERE \"doctorId\" = ? AND \"patientId\" = ?", [doctorId, patientId])
+
+      await Patient.query().findById(patientId).patch({
+        lastServerEdit: new Date()
+      })
 
       res.json({
         result: "ok"

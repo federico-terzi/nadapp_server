@@ -214,6 +214,8 @@ describe("med (patient-reports)", () => {
   })
 
   it("admin doctor should upload reports", async () => {
+    const previousLastEdit = (await Patient.query().findById(3)).lastServerEdit
+
     const reports = await Report.query().where("patientId", 3)
     expect(reports.length).to.be.eq(2)
 
@@ -241,6 +243,9 @@ describe("med (patient-reports)", () => {
     const [iv, key] = report.getIVKey()
     const decrypted = decryptData(iv, key, uploadedFileContent)
     expect(decrypted).to.be.deep.eq(reportFileContent)
+
+    const newLastEdit = (await Patient.query().findById(3)).lastServerEdit
+    expect(newLastEdit).to.be.greaterThan(previousLastEdit)
   })
 
   it("upload without file should fail", async () => {
