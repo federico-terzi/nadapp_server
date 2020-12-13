@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("location").notNullable()
     table.string("iv").notNullable()
     table.string("key").notNullable()
+    table.string("hmac").notNullable()
   })
 }
 

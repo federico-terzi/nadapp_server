@@ -12,6 +12,7 @@ import { decryptData, encryptData, generateKeyIV } from "../../util";
 import util from "util"
 import fs, { read } from "fs"
 import { downloadReportResponse } from "../reports";
+import crypto from "crypto"
 
 const writeFile = util.promisify(fs.writeFile)
 const readFile = util.promisify(fs.readFile)
@@ -180,12 +181,16 @@ router.post(
       // Save the encrypted file to the final destination
       await writeFile(finalDestination, encryptedFileData)
 
+      // Generate the HMAC signature
+      const hmac = crypto.createHmac("sha256", key).update(uploadedFile.data).digest("base64")
+
       // Then finally add the report inside the db, saving the key and IV vector
       const report = await Report.query().insert({
         date: new Date(),
         patientId: patientId,
         iv: iv.toString("base64"),
         key: key.toString("base64"),
+        hmac: hmac,
         location: finalFilename,
       })
 

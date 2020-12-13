@@ -7,6 +7,7 @@ export default class Report extends Model {
   location!: string
   iv!: string
   key!: string
+  hmac!: string
   
   static tableName = 'reports'
 

@@ -6,6 +6,7 @@ import config from "config"
 import util from "util"
 import fs from "fs"
 import { decryptData } from "../util"
+import crypto from "crypto"
 
 const readFile = util.promisify(fs.readFile)
 
@@ -27,6 +28,14 @@ export const downloadReportResponse = async (reportId: number, patientId: number
   // Decrypt the file contents
   const [iv, key] = report.getIVKey()
   const decryptedData = decryptData(iv, key, encryptedReportContent)
+
+  // Generate the HMAC signature
+  const hmac = crypto.createHmac("sha256", key).update(decryptedData).digest("base64")
+
+  // Verify that the signature is matching
+  if (hmac !== report.hmac) {
+    throw new HttpError("integrity error", 500)
+  }
 
   const downloadFilename = `${patientId}_${report.date.getTime()}.pdf`
 
